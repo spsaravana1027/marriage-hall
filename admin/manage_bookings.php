@@ -1,5 +1,6 @@
 <?php
 require_once '../includes/auth_functions.php';
+require_once '../includes/send_mail.php';
 
 if (!isLoggedIn() || !isAdmin()) {
     header('Location: adminlogin.php');
@@ -18,9 +19,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_booking'])) {
     $p_status = $_POST['payment_status'];
 
     try {
-        $stmt = $pdo->prepare("UPDATE bookings SET event_name = ?, event_date = ?, advance_amount = ?, payment_status = ? WHERE id = ?");
+        // Fetch old payment status
+        $old = $pdo->prepare("SELECT payment_status FROM bookings WHERE id = ?");
+        $old->execute([$id]);
+        $old_payment = $old->fetchColumn();
+
+        // If payment changed to paid, auto-confirm the booking
+        $new_status_sql = ($p_status === 'paid' && $old_payment !== 'paid') ? ", status = 'confirmed'" : "";
+
+        $stmt = $pdo->prepare("UPDATE bookings SET event_name = ?, event_date = ?, advance_amount = ?, payment_status = ? {$new_status_sql} WHERE id = ?");
         if ($stmt->execute([$event_name, $event_date, $advance, $p_status, $id])) {
             $msg = "Booking updated successfully!";
+
+            // Send confirmation mail if payment just became paid
+            if ($p_status === 'paid' && $old_payment !== 'paid') {
+                $bk = $pdo->prepare("
+                    SELECT b.*, h.name AS hall_name, u.name AS user_name, u.email AS user_email, s.name AS slot_name
+                    FROM bookings b
+                    JOIN halls h ON b.hall_id = h.id
+                    JOIN users u ON b.user_id = u.id
+                    LEFT JOIN slots s ON b.slot_id = s.id
+                    WHERE b.id = ?
+                ");
+                $bk->execute([$id]);
+                $booking = $bk->fetch();
+                if ($booking) {
+                    $sent = sendBookingConfirmationMail($booking['user_email'], $booking['user_name'], $booking);
+                    $msg .= $sent ? ' Confirmation email sent to ' . htmlspecialchars($booking['user_email']) . '.' : ' (Email sending failed.)';
+                }
+            }
         } else {
             $error = "Failed to update booking.";
         }

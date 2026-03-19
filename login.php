@@ -48,14 +48,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flex-direction: column;
             padding: 3rem;
         }
-        }
-        @media(max-width:1150px) { .auth-left { display: none; } .auth-right { width: 100%; } }
         .auth-right {
             width: 55%;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 3rem;
+            padding: 2rem 1.5rem;
+        }
+        @media(max-width:1150px) {
+            .auth-left { display: none; }
+            .auth-right { width: 100%; }
+        }
+        @media(max-width:480px) {
+            .auth-right { padding: 1.5rem 1rem; }
+            .auth-form-wrap { max-width: 100%; }
+            h1 { font-size: 1.5rem !important; }
         }
         .auth-form-wrap { width: 100%; max-width: 420px; }
         .auth-brand { font-family: 'Poppins',sans-serif; font-weight: 800; font-size: 1.8rem; color: white; margin-bottom: 2rem; }

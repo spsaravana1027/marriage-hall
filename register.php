@@ -50,12 +50,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { background: var(--bg); min-height: 100vh; display: flex; }
-        .auth-left { width: 40%; background: var(--gradient-hero); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 3rem; }
-        @media(max-width:1150px) { .auth-left { display: none; } .auth-right { width: 100%; } }
-        .auth-right { width: 60%; display: flex; align-items: center; justify-content: center; padding: 2.5rem; overflow-y: auto; }
+        .auth-left {
+            width: 40%;
+            background: var(--gradient-hero);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+        }
+        .auth-right {
+            width: 60%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2.5rem 2rem;
+            overflow-y: auto;
+        }
         .auth-form-wrap { width: 100%; max-width: 500px; }
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        @media(max-width:480px) { .form-row { grid-template-columns: 1fr; } }
+        @media(max-width:1150px) {
+            .auth-left { display: none; }
+            .auth-right { width: 100%; }
+        }
+        @media(max-width:600px) {
+            .form-row { grid-template-columns: 1fr; }
+            .auth-right { padding: 1.5rem 1rem; }
+            .auth-form-wrap { max-width: 100%; }
+            h1 { font-size: 1.5rem !important; }
+        }
         .strength-bar { height: 4px; border-radius: 2px; background: var(--border); margin-top: 0.4rem; overflow: hidden; }
         .strength-fill { height: 100%; border-radius: 2px; transition: width 0.3s, background 0.3s; }
     </style>

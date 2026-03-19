@@ -4,7 +4,6 @@ require_once 'includes/auth_functions.php';
 $form_success = false;
 $form_error = '';
 
-// Simple contact form handler (stores in session or could email)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name    = trim($_POST['name'] ?? '');
     $email   = trim($_POST['email'] ?? '');
@@ -17,15 +16,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $form_error = 'Please enter a valid email address.';
     } else {
-        // Log inquiry to DB if table exists, else just show success
         try {
             $pdo->prepare("
                 INSERT INTO contact_inquiries (name, email, phone, subject, message, created_at)
                 VALUES (?, ?, ?, ?, ?, NOW())
             ")->execute([$name, $email, $phone, $subject, $message]);
-        } catch (Exception $e) {
-            // Table might not exist yet   still show success
-        }
+        } catch (Exception $e) {}
         $form_success = true;
     }
 }
@@ -36,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Us | <?php echo $brand_name; ?></title>
-    <meta name="description" content="Get in touch with Sri Lakshmi Residency & Mahal   we're here to help with all your hall booking queries.">
+    <meta name="description" content="Get in touch with Sri Lakshmi Residency & Mahal – we're here to help with all your hall booking queries.">
     <link rel="stylesheet" href="assets/css/style.css?v=rose2">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -44,12 +40,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .contact-info-card { display: flex; align-items: flex-start; gap: 1.25rem; padding: 1.5rem; background: white; border-radius: var(--radius-lg); border: 1px solid var(--border); transition: var(--transition); }
         .contact-info-card:hover { box-shadow: var(--shadow-md); border-color: var(--primary); }
         .ci-icon { width: 52px; height: 52px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; flex-shrink: 0; }
-        .map-embed { width: 100%; height: 300px; border-radius: var(--radius-lg); border: 1px solid var(--border); overflow: hidden; }
         .faq-item { padding: 1.25rem; background: white; border-radius: var(--radius-lg); border: 1px solid var(--border); cursor: pointer; transition: var(--transition); }
         .faq-item:hover { border-color: var(--primary); }
         .faq-answer { display: none; margin-top: 0.75rem; color: var(--gray); font-size: 0.875rem; line-height: 1.7; }
         .faq-item.open .faq-answer { display: block; }
         .faq-item.open { border-color: var(--primary); background: var(--primary-light); }
+        .contact-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .contact-main-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 2rem; align-items: start; }
+        @media (max-width: 992px) {
+            .contact-main-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            .contact-form-grid { grid-template-columns: 1fr; }
+            .contact-info-card { padding: 1rem; gap: 0.9rem; }
+            .ci-icon { width: 44px; height: 44px; font-size: 1rem; }
+            .contact-form-header { padding: 1.25rem !important; }
+            .contact-form-body { padding: 1.25rem !important; }
+            .cta-banner { padding: 2.5rem 1.5rem !important; }
+            .cta-banner h2 { font-size: 1.3rem !important; }
+            .cta-banner p { font-size: 0.875rem !important; }
+        }
     </style>
 </head>
 <body>
@@ -64,23 +74,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 
-    <section class="section">
+    <!-- CONTACT INFO + FORM -->
+    <section class="section" style="background:white;">
         <div class="container">
-            <div class="grid-2" style="grid-template-columns: 1fr 1.4fr; align-items:start;">
+            <div class="contact-main-grid">
 
                 <!-- LEFT: CONTACT INFO -->
                 <div>
-                    <div class="section-label" style="margin-bottom:1.5rem;"><i class="fas fa-address-book"></i> Get in Touch</div>
-                    <h2 style="font-size:1.75rem;margin-bottom:0.75rem;">We'd Love to <span style="color:var(--primary);">Hear From You</span></h2>
+                    <div class="section-label"><i class="fas fa-address-book"></i> Get in Touch</div>
+                    <h2 class="section-heading">We'd Love to <span>Hear From You</span></h2>
                     <p style="color:var(--gray);font-size:0.9rem;line-height:1.7;margin-bottom:2rem;">Reach out via phone, email, or fill the form. Our support team responds within 24 hours on business days.</p>
 
                     <div style="display:flex;flex-direction:column;gap:1rem;margin-bottom:2rem;">
                         <?php
                         $contacts = [
-                            ['fas fa-phone','#7c3aed','#ede9fe','Call Us Directly','+91 98765 43210','Mon-Sat, 9:00 AM - 6:00 PM','Available for instant enquiries'],
-                            ['fas fa-envelope','#ec4899','#fce7f3','Email Support','srilakshmimahal@gmail.com','contact@srilakshmimahal.com','We reply within 24 hours'],
-                            ['fas fa-map-marker-alt','#10b981','#d1fae5','Our Location','Sri Lakshmi Residency & Mahal','Srivilliputhur, Tamil Nadu','In the heart of the city'],
-                            ['fas fa-whatsapp','#25d366','#dcfce7','WhatsApp Booking','Easy chat-based booking','Ready-to-use text','Fast & convenient'],
+                            ['fas fa-phone',         '#7c3aed','#ede9fe','Call Us Directly',    '+91 98765 43210',              'Mon-Sat, 9:00 AM - 6:00 PM',       'Available for instant enquiries'],
+                            ['fas fa-envelope',      '#ec4899','#fce7f3','Email Support',        'srilakshmimahal@gmail.com',    'contact@srilakshmimahal.com',       'We reply within 24 hours'],
+                            ['fas fa-map-marker-alt','#10b981','#d1fae5','Our Location',         'Sri Lakshmi Residency & Mahal','Srivilliputhur, Tamil Nadu',        'In the heart of the city'],
+                            ['fab fa-whatsapp',      '#25d366','#dcfce7','WhatsApp Booking',     'Easy chat-based booking',      'Fast & convenient',                 'Message us anytime'],
                         ];
                         foreach ($contacts as [$icon,$col,$bg,$label,$line1,$line2,$line3]): ?>
                             <div class="contact-info-card">
@@ -100,14 +111,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <!-- Social Links -->
                     <div>
                         <div style="font-weight:700;font-size:0.85rem;margin-bottom:0.75rem;color:var(--dark-2);">Follow Us</div>
-                        <div style="display:flex;gap:0.75rem;">
+                        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
                             <?php foreach ([
                                 ['fab fa-facebook-f','#1877f2','Facebook'],
-                                ['fab fa-instagram','#e1306c','Instagram'],
-                                ['fab fa-whatsapp','#25d366','WhatsApp'],
-                                ['fab fa-youtube','#ff0000','YouTube'],
+                                ['fab fa-instagram', '#e1306c','Instagram'],
+                                ['fab fa-whatsapp',  '#25d366','WhatsApp'],
+                                ['fab fa-youtube',   '#ff0000','YouTube'],
                             ] as [$ic,$col,$lbl]): ?>
-                                <a href="#" title="<?php echo $lbl; ?>" style="width:42px;height:42px;border-radius:50%;background:white;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:<?php echo $col; ?>;font-size:1rem;transition:var(--transition);" onmouseover="this.style.background='<?php echo $col; ?>';this.style.color='white';this.style.borderColor='<?php echo $col; ?>'" onmouseout="this.style.background='white';this.style.color='<?php echo $col; ?>';this.style.borderColor='var(--border)'">
+                                <a href="#" title="<?php echo $lbl; ?>" style="width:42px;height:42px;border-radius:50%;background:white;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:<?php echo $col; ?>;font-size:1rem;transition:var(--transition);"
+                                   onmouseover="this.style.background='<?php echo $col; ?>';this.style.color='white';this.style.borderColor='<?php echo $col; ?>'"
+                                   onmouseout="this.style.background='white';this.style.color='<?php echo $col; ?>';this.style.borderColor='var(--border)'">
                                     <i class="<?php echo $ic; ?>"></i>
                                 </a>
                             <?php endforeach; ?>
@@ -118,27 +131,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <!-- RIGHT: CONTACT FORM -->
                 <div>
                     <div style="background:white;border-radius:var(--radius-xl);border:1px solid var(--border);box-shadow:var(--shadow-md);overflow:hidden;">
-                        <div style="background:var(--gradient-primary);padding:1.75rem 2rem;color:white;">
+                        <div class="contact-form-header" style="background:var(--gradient-primary);padding:1.75rem 2rem;color:white;">
                             <h3 style="color:white;margin-bottom:0.25rem;"><i class="fas fa-paper-plane"></i> Send Us a Message</h3>
                             <p style="color:rgba(255,255,255,0.8);font-size:0.875rem;margin:0;">Fill the form and we'll get back to you shortly.</p>
                         </div>
-                        <div style="padding:2rem;">
+                        <div class="contact-form-body" style="padding:2rem;">
                             <?php if ($form_success): ?>
                                 <div style="text-align:center;padding:3rem 1rem;">
                                     <div style="width:72px;height:72px;background:#d1fae5;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;">
                                         <i class="fas fa-check-circle" style="font-size:2rem;color:#10b981;"></i>
                                     </div>
                                     <h3 style="margin-bottom:0.5rem;">Message Sent!</h3>
-                                    <p style="color:var(--gray);margin-bottom:1.5rem;">Thank you for reaching out. Our team will respond to you within 24 hours.</p>
+                                    <p style="color:var(--gray);margin-bottom:1.5rem;">Thank you for reaching out. Our team will respond within 24 hours.</p>
                                     <a href="contact.php" class="btn btn-primary"><i class="fas fa-redo"></i> Send Another Message</a>
                                 </div>
                             <?php else: ?>
                                 <?php if ($form_error): ?>
-                                    <div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> <?php echo $form_error; ?></div>
+                                    <div class="alert alert-danger" style="background:#fee2e2;color:#991b1b;padding:0.85rem 1rem;border-radius:var(--radius);margin-bottom:1.25rem;font-size:0.875rem;">
+                                        <i class="fas fa-exclamation-circle"></i> <?php echo $form_error; ?>
+                                    </div>
                                 <?php endif; ?>
-
                                 <form method="POST">
-                                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                                    <div class="contact-form-grid">
                                         <div class="form-group">
                                             <label>Your Name <span style="color:var(--danger)">*</span></label>
                                             <div class="input-icon-wrap">
@@ -154,7 +168,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="form-group">
                                         <label>Email Address <span style="color:var(--danger)">*</span></label>
                                         <div class="input-icon-wrap">
@@ -162,26 +175,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <input type="email" name="email" class="form-control" placeholder="your@email.com" required value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>">
                                         </div>
                                     </div>
-
                                     <div class="form-group">
                                         <label>Subject</label>
                                         <select name="subject" class="form-control">
                                             <option value="">Select a topic...</option>
-                                            <option value="Hall Booking Inquiry" <?php echo ($_POST['subject']??'')==='Hall Booking Inquiry'?'selected':''; ?>>Hall Booking Inquiry</option>
-                                            <option value="Pricing & Packages" <?php echo ($_POST['subject']??'')==='Pricing & Packages'?'selected':''; ?>>Pricing & Packages</option>
-                                            <option value="Slot Availability" <?php echo ($_POST['subject']??'')==='Slot Availability'?'selected':''; ?>>Slot Availability</option>
-                                            <option value="Booking Cancellation" <?php echo ($_POST['subject']??'')==='Booking Cancellation'?'selected':''; ?>>Booking Cancellation</option>
-                                            <option value="Technical Issue" <?php echo ($_POST['subject']??'')==='Technical Issue'?'selected':''; ?>>Technical Issue</option>
-                                            <option value="General Enquiry" <?php echo ($_POST['subject']??'')==='General Enquiry'?'selected':''; ?>>General Enquiry</option>
-                                            <option value="List My Hall" <?php echo ($_POST['subject']??'')==='List My Hall'?'selected':''; ?>>List My Hall on Sri Lakshmi Residency & Mahal</option>
+                                            <option value="Hall Booking Inquiry"  <?php echo ($_POST['subject']??'')==='Hall Booking Inquiry'  ?'selected':''; ?>>Hall Booking Inquiry</option>
+                                            <option value="Pricing & Packages"    <?php echo ($_POST['subject']??'')==='Pricing & Packages'    ?'selected':''; ?>>Pricing & Packages</option>
+                                            <option value="Slot Availability"     <?php echo ($_POST['subject']??'')==='Slot Availability'     ?'selected':''; ?>>Slot Availability</option>
+                                            <option value="Booking Cancellation"  <?php echo ($_POST['subject']??'')==='Booking Cancellation'  ?'selected':''; ?>>Booking Cancellation</option>
+                                            <option value="Technical Issue"       <?php echo ($_POST['subject']??'')==='Technical Issue'       ?'selected':''; ?>>Technical Issue</option>
+                                            <option value="General Enquiry"       <?php echo ($_POST['subject']??'')==='General Enquiry'       ?'selected':''; ?>>General Enquiry</option>
+                                            <option value="List My Hall"          <?php echo ($_POST['subject']??'')==='List My Hall'          ?'selected':''; ?>>List My Hall</option>
                                         </select>
                                     </div>
-
                                     <div class="form-group">
                                         <label>Message <span style="color:var(--danger)">*</span></label>
                                         <textarea name="message" class="form-control" rows="5" placeholder="Tell us how we can help you..." required style="resize:vertical;"><?php echo htmlspecialchars($_POST['message'] ?? ''); ?></textarea>
                                     </div>
-
                                     <button type="submit" class="btn btn-primary btn-lg" style="width:100%;justify-content:center;">
                                         <i class="fas fa-paper-plane"></i> Send Message
                                     </button>
@@ -190,12 +200,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
 
     <!-- FAQ -->
-    <section class="section" style="background:white;">
+    <section class="section">
         <div class="container">
             <div class="text-center" style="margin-bottom:3rem;">
                 <div class="section-label"><i class="fas fa-question-circle"></i> Common Questions</div>
@@ -204,12 +215,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div style="max-width:750px;margin:0 auto;display:flex;flex-direction:column;gap:0.75rem;">
                 <?php
                 $faqs = [
-                    ['How do I book a hall on Sri Lakshmi Residency & Mahal?', 'Browse halls, click on any hall to view details, select your event date and time slot (Full Day / Morning / Evening), fill in your event name, and click "Confirm Booking". You need to be logged in to book.'],
-                    ['What are the available time slots?', 'We offer 3 booking types: Full Day (all day), Morning Slot (7:00 AM â€“ 2:00 PM), and Evening Slot (4:00 PM â€“ 12:00 AM). Availability depends on the specific hall.'],
-                    ['How much advance payment is required?', 'Each hall has its own advance amount set by the hall owner. This amount is shown clearly in the booking form before you confirm. The balance is paid on the event day.'],
-                    ['Can I cancel my booking?', 'Please contact our support team to discuss cancellation. Cancellation policies vary by hall. Once confirmed by the admin, cancellations may be subject to the hall\'s cancellation policy.'],
-                    ['How do I know if my booking is confirmed?', 'After submitting your booking, it will show as "Pending" in My Bookings. Our admin team reviews and confirms it. You will see the status change to "Confirmed" in your booking dashboard.'],
-                    ['How do I list my hall on Sri Lakshmi Residency & Mahal?', 'Contact us using the form above with subject "List My Hall on Sri Lakshmi Residency & Mahal". Our team will review and add your hall after verification.'],
+                    ['How do I book a hall?',                        'Browse halls, click on any hall to view details, select your event date and time slot (Full Day / Morning / Evening), fill in your event name, and click "Confirm Booking". You need to be logged in to book.'],
+                    ['What are the available time slots?',           'We offer 3 booking types: Full Day (all day), Morning Slot (7:00 AM – 2:00 PM), and Evening Slot (4:00 PM – 12:00 AM). Availability depends on the specific hall.'],
+                    ['How much advance payment is required?',        'Each hall has its own advance amount set by the hall owner. This is shown clearly in the booking form before you confirm. The balance is paid on the event day.'],
+                    ['Can I cancel my booking?',                     'Please contact our support team to discuss cancellation. Cancellation policies vary by hall. Once confirmed by the admin, cancellations may be subject to the hall\'s cancellation policy.'],
+                    ['How do I know if my booking is confirmed?',    'After submitting your booking, it will show as "Pending" in My Bookings. Our admin team reviews and confirms it. You will see the status change to "Confirmed" in your booking dashboard.'],
+                    ['How do I list my hall?',                       'Contact us using the form above with subject "List My Hall". Our team will review and add your hall after verification.'],
                 ];
                 foreach ($faqs as $i => [$q,$a]): ?>
                     <div class="faq-item" id="faq<?php echo $i; ?>" onclick="toggleFaq(<?php echo $i; ?>)">
@@ -224,9 +235,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </section>
 
-    <!-- FOOTER -->
-    <?php include 'includes/footer.php'; ?>
+    <!-- CTA -->
+    <section class="section" style="background:white;">
+        <div class="container">
+            <div class="cta-banner" style="background:var(--gradient-primary);border-radius:var(--radius-xl);padding:4rem 3rem;text-align:center;position:relative;overflow:hidden;">
+                <div style="position:relative;z-index:1;">
+                    <h2 style="color:white;font-size:2.25rem;margin-bottom:0.75rem;">Ready to Book Your Venue?</h2>
+                    <p style="color:rgba(255,255,255,0.8);margin-bottom:2rem;font-size:1.05rem;">Browse our collection of verified halls and make your event unforgettable.</p>
+                    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+                        <a href="halls.php" class="btn btn-white btn-lg"><i class="fas fa-building"></i> Browse Halls</a>
+                        <a href="about.php" class="btn btn-lg" style="background:rgba(255,255,255,0.15);color:white;border:2px solid rgba(255,255,255,0.3);"><i class="fas fa-info-circle"></i> About Us</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
+    <?php include 'includes/footer.php'; ?>
     <?php include 'includes/modals.php'; ?>
     <?php include 'includes/chatbot.php'; ?>
 
@@ -235,14 +260,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             const item = document.getElementById('faq' + i);
             const icon = item.querySelector('.faq-icon-' + i);
             const isOpen = item.classList.contains('open');
-
-            // Close all
             document.querySelectorAll('.faq-item').forEach((el, idx) => {
                 el.classList.remove('open');
                 el.querySelector('[class*="faq-icon-"]').style.transform = 'rotate(0deg)';
             });
-
-            // Toggle clicked
             if (!isOpen) {
                 item.classList.add('open');
                 icon.style.transform = 'rotate(180deg)';
@@ -251,5 +272,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </script>
 </body>
 </html>
-
-
