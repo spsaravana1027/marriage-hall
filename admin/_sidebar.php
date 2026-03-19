@@ -32,6 +32,9 @@ $current_page = basename($_SERVER['PHP_SELF']);
         <a href="manage_users.php" class="sidebar-link <?php echo $current_page === 'manage_users.php' ? 'active' : ''; ?>">
             <i class="fas fa-users"></i> Manage Users
         </a>
+        <a href="contact_inquiries.php" class="sidebar-link <?php echo $current_page === 'contact_inquiries.php' ? 'active' : ''; ?>">
+            <i class="fas fa-envelope"></i> Contact Inquiries
+        </a>
 
         <div class="sidebar-label" style="margin-top:1.25rem;">Site</div>
         <a href="banner_settings.php" class="sidebar-link <?php echo $current_page === 'banner_settings.php' ? 'active' : ''; ?>">
