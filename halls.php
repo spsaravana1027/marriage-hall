@@ -394,7 +394,7 @@ else {
                                         </option>
                                         <?php endforeach; ?>
                                     </select>
-                                    <input type="hidden" name="is_full_day" id="is_full_day" value="">
+                                    <input type="hidden" name="is_full_day" id="is_full_day" value="0">
                                     <input type="hidden" name="slot_id" id="slot_id_input" value="">
                                 </div>
 
@@ -614,14 +614,23 @@ else {
             const isFullDay = opt.dataset.fullday === '1';
             const slotId    = opt.dataset.slotid || '';
 
-            // Update hidden inputs
             document.getElementById('is_full_day').value   = isFullDay ? '1' : '0';
             document.getElementById('slot_id_input').value = slotId;
 
-            // Update price breakdown
             const slotPrice = isFullDay ? hallPricePerDay : hallPricePerDay * 0.55;
             document.getElementById('hallRate').textContent = 'Rs. ' + slotPrice.toLocaleString('en-IN', {maximumFractionDigits:0});
         }
+
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            const select = document.getElementById('bookingTypeSelect');
+            if (!select.value) {
+                e.preventDefault();
+                alert('Please select a booking type.');
+                return;
+            }
+            // Ensure hidden inputs are set from current selection
+            handleSlotChange(select);
+        });
 
         // Date: prevent past dates
         document.getElementById('event_date').addEventListener('change', function() {
