@@ -547,6 +547,29 @@ select.form-control {
     padding-left: 2.75rem;
 }
 
+/* ── Validation Styles ─────────────────────── */
+.validation-error {
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 0.4rem;
+    min-height: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    transition: var(--transition);
+}
+
+.form-control.invalid-field {
+    border-color: var(--danger) !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.08) !important;
+}
+
+.form-control.valid-field {
+    border-color: var(--success) !important;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.08) !important;
+}
+
+
 /* Premium File Upload UI */
 .file-upload-wrapper {
     position: relative;

@@ -96,12 +96,12 @@ $slots = $slots_stmt->fetchAll();
                     <form action="actions/book_hall.php" method="POST">
                         <input type="hidden" name="hall_id" value="<?php echo $hall['id']; ?>">
                         
-                        <div style="margin-bottom: 1.5rem;">
+                        <div class="form-group">
                             <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Select Date</label>
-                            <input type="date" name="event_date" required min="<?php echo date('Y-m-d'); ?>" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 10px;">
+                            <input type="date" name="event_date" class="form-control" required min="<?php echo date('Y-m-d'); ?>">
                         </div>
 
-                        <div style="margin-bottom: 1.5rem;">
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
                             <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Select Time Slot</label>
                             <?php foreach ($slots as $slot): ?>
                                 <label style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem; padding: 0.75rem; border: 1px solid #eee; border-radius: 10px; cursor: pointer;">
@@ -113,6 +113,7 @@ $slots = $slots_stmt->fetchAll();
                                 </label>
                             <?php endforeach; ?>
                         </div>
+
 
                         <?php if (isLoggedIn()): ?>
                             <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem; margin-bottom: 1rem;">Book Now</button>
@@ -130,7 +131,9 @@ $slots = $slots_stmt->fetchAll();
     <footer style="background: var(--dark); color: white; padding: 3rem 10%; text-align: center;">
         <p>&copy; 2026 HallBooking Management System. All rights reserved.</p>
     </footer>
+    <script src="assets/js/validation.js"></script>
 </body>
 </html>
+
 
 

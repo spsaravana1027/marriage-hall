@@ -147,6 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 </div>
 
+
                 <button type="submit" class="btn btn-primary btn-lg" style="width:100%;justify-content:center;margin-top:0.5rem;">
                     <i class="fas fa-sign-in-alt"></i> Login to Account
                 </button>
@@ -160,6 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 
+    <script src="assets/js/validation.js"></script>
     <script>
         // Reveal trigger
         window.addEventListener('load', () => {
@@ -173,6 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             else { p.type = 'password'; i.classList.replace('fa-eye-slash','fa-eye'); }
         }
     </script>
+
 </body>
 </html>
 

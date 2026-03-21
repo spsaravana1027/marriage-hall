@@ -386,14 +386,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send'])) {
                                             <label>Your Name <span style="color:var(--danger)">*</span></label>
                                             <div class="input-icon-wrap">
                                                 <i class="fas fa-user"></i>
-                                                <input type="text" name="name" class="form-control" placeholder="Full Name" required value="<?php echo htmlspecialchars($_POST['name'] ?? (isLoggedIn() ? $_SESSION['user_name'] : '')); ?>">
+                                                <input type="text" name="name" data-validate="name" class="form-control" placeholder="Full Name" required value="<?php echo htmlspecialchars($_POST['name'] ?? (isLoggedIn() ? $_SESSION['user_name'] : '')); ?>">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label>Phone Number</label>
                                             <div class="input-icon-wrap">
                                                 <i class="fas fa-phone"></i>
-                                                <input type="tel" name="phone" class="form-control" placeholder="+91 XXXXX XXXXX" value="<?php echo htmlspecialchars($_POST['phone'] ?? ''); ?>">
+                                                <input type="tel" name="phone" data-validate="phone" class="form-control" placeholder="10-digit mobile" value="<?php echo htmlspecialchars($_POST['phone'] ?? ''); ?>">
                                             </div>
                                         </div>
                                     </div>
@@ -404,6 +404,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send'])) {
                                             <input type="email" name="email" class="form-control" placeholder="your@email.com" required value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>">
                                         </div>
                                     </div>
+
 
                                     <!-- <div class="form-group">
                                         <label>Subject</label>
@@ -487,8 +488,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send'])) {
     <?php include 'includes/modals.php'; ?>
     <?php include 'includes/chatbot.php'; ?>
 
+    <script src="assets/js/validation.js"></script>
     <script>
         function toggleFaq(i) {
+
             const item = document.getElementById('faq' + i);
             const icon = item.querySelector('.faq-icon-' + i);
             const isOpen = item.classList.contains('open');
