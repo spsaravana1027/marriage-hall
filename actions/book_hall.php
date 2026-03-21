@@ -70,23 +70,26 @@ if (!isSlotAvailable($pdo, $hall_id, $event_date, $slot_id, $is_full_day)) {
 try {
     $booking_id = 'BK-' . strtoupper(substr(md5(uniqid(rand(), true)), 0, 8));
 
-    $insert = $pdo->prepare("
-        INSERT INTO bookings 
-            (booking_id, user_id, hall_id, event_name, event_date, slot_id, is_full_day, advance_amount, status, created_at) 
-        VALUES 
-            (?, ?, ?, ?, ?, ?, ?, ?, 'pending', NOW())
-    ");
+    if ($is_full_day) {
+        $dummy_slot = $pdo->query("SELECT id FROM slots LIMIT 1")->fetchColumn();
+        
+        $insert = $pdo->prepare("
+            INSERT INTO bookings 
+                (booking_id, user_id, hall_id, event_name, event_date, slot_id, is_full_day, advance_amount, status, payment_status, created_at) 
+            VALUES 
+                (?, ?, ?, ?, ?, ?, 1, ?, 'pending', 'unpaid', NOW())
+        ");
+        $insert->execute([$booking_id, $user_id, $hall_id, $event_name, $event_date, $dummy_slot, $advance_amount]);
+    } else {
+        $insert = $pdo->prepare("
+            INSERT INTO bookings 
+                (booking_id, user_id, hall_id, event_name, event_date, slot_id, is_full_day, advance_amount, status, payment_status, created_at) 
+            VALUES 
+                (?, ?, ?, ?, ?, ?, 0, ?, 'pending', 'unpaid', NOW())
+        ");
+        $insert->execute([$booking_id, $user_id, $hall_id, $event_name, $event_date, $slot_id, $advance_amount]);
+    }
 
-    $insert->execute([
-        $booking_id,
-        $user_id,
-        $hall_id,
-        $event_name,
-        $event_date,
-        $slot_id,
-        $is_full_day,
-        $advance_amount
-    ]);
 
     // ===== SEND ADMIN EMAIL NOTIFICATION (SMTP with PHPMailer) =====
     try {
@@ -103,7 +106,7 @@ try {
         // Get slot info
         $slot_stmt = $pdo->prepare("SELECT name FROM slots WHERE id = ?");
         $slot_stmt->execute([$slot_id]);
-        $slot_label = $is_full_day ? 'Full Day' : ($slot_stmt->fetchColumn() ?: 'N/A');
+        $slot_label = $is_full_day ? 'Full Day (9:00am - 11:00pm)' : ($slot_stmt->fetchColumn() ?: 'N/A');
 
         $date_fmt = date('d M Y', strtotime($event_date));
 
@@ -307,7 +310,11 @@ try {
 
 } catch (\PDOException $e) {
     error_log('Booking error: ' . $e->getMessage());
-    header("Location: ../halls.php?id=$hall_id&error=db_error");
-    exit();
+    die('<div style="font-family:sans-serif; padding: 2rem; border:2px solid red; background:#ffebeb; color:red; max-width:600px; margin: 2rem auto; border-radius:10px;">
+        <h2>Database Error</h2>
+        <p>There was a critical error saving your booking. Please send this exactly to the developer:</p>
+        <pre style="background:white; padding:1rem; border:1px solid #ccc; white-space:pre-wrap;">' . htmlspecialchars($e->getMessage()) . '</pre>
+        <br><a href="../halls.php?id=' . $hall_id . '" style="padding: 10px 15px; background: red; color: white; text-decoration: none; border-radius: 5px;">Go Back</a>
+    </div>');
 }
 ?>

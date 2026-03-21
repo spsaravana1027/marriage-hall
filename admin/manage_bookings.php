@@ -282,7 +282,7 @@ try {
                                     <td>
                                         <span class="badge badge-<?php echo $b['is_full_day'] ? 'primary' : 'info'; ?>" style="font-size:0.68rem;">
                                             <?php if ($b['is_full_day']): ?>
-                                                Full Day
+                                                Full Day (9:00am - 11:00pm)
                                             <?php elseif ($b['slot_name']): ?>
                                                 <?php echo htmlspecialchars($b['slot_name']); ?>
                                             <?php else: echo '-'; endif; ?>

@@ -141,7 +141,7 @@ try {
                     <h4 style="margin:0;"><?php echo $action === 'edit' ? 'âœï¸ Edit Hall' : 'âž• Add New Hall'; ?></h4>
                     <a href="manage_halls.php" class="btn btn-outline btn-sm"><i class="fas fa-arrow-left"></i> Back</a>
                 </div>
-                <div style="padding:2rem;">
+                <div style="padding:1.25rem;">
                     <form method="POST" enctype="multipart/form-data">
                         <?php if ($edit_hall): ?>
                             <input type="hidden" name="hall_id" value="<?php echo $edit_hall['id']; ?>">

@@ -32,7 +32,7 @@ if (isset($_GET['ajax']) && $hall_id > 0 && isset($pdo)) {
             SELECT b.event_date, b.is_full_day, s.name AS slot_name, b.event_name, b.status, u.name AS user_name
             FROM bookings b JOIN users u ON b.user_id=u.id
             LEFT JOIN slots s ON b.slot_id=s.id
-            WHERE b.hall_id=? AND b.event_date>=? AND b.event_date<=? AND b.status='confirmed'
+            WHERE b.hall_id=? AND b.event_date>=? AND b.event_date<=? AND b.status != 'cancelled'
             ORDER BY b.event_date ASC
         ");
         $s->execute([$hall_id, $month_start, $month_end]);
@@ -80,7 +80,7 @@ if ($hall_id > 0) {
             FROM bookings b
             JOIN users u ON b.user_id = u.id
             LEFT JOIN slots s ON b.slot_id = s.id
-            WHERE b.hall_id = ? AND b.event_date >= ? AND b.event_date <= ? AND b.status = 'confirmed'
+            WHERE b.hall_id = ? AND b.event_date >= ? AND b.event_date <= ? AND b.status != 'cancelled'
             ORDER BY b.event_date ASC
         ");
         $bstmt->execute([$hall_id, $month_start, $month_end]);
@@ -409,43 +409,37 @@ else {
                             </div>
                         </div>
 
-                        <?php if (!empty($booked_dates)): ?>
-                            <div style="overflow-x:auto;">
-                                <table class="occupancy-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Date</th>
-                                            <th>Event</th>
-                                            <th>Slot</th>
-                                            <th>Booked By</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($booked_dates as $bk): ?>
-                                            <tr>
-                                                <td><strong><?php echo date('d M Y (D)', strtotime($bk['event_date'])); ?></strong></td>
-                                                <td><?php echo htmlspecialchars($bk['event_name'] ?? '-'); ?></td>
-                                                <td>
-                                                    <span class="badge badge-<?php echo $bk['is_full_day'] ? 'primary' : 'info'; ?>">
-                                                        <?php echo $bk['is_full_day'] ? 'Full Day' : htmlspecialchars($bk['slot_name'] ?? '-'); ?>
-                                                    </span>
-                                                </td>
-                                                <td style="color:var(--gray);"><?php echo htmlspecialchars(substr($bk['user_name'], 0, 1) . '***'); ?></td>
-                                                <td><span class="badge badge-<?php echo $bk['status'] === 'confirmed' ? 'success' : 'warning'; ?>"><?php echo ucfirst($bk['status']); ?></span></td>
-                                            </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        <?php else: ?>
-                            <div style="text-align:center;padding:3rem;">
-                                <i class="fas fa-calendar-check" style="font-size:2.5rem;margin-bottom:1rem;color:#10b981;display:block;"></i>
-                                <p style="font-size:1rem;font-weight:600;color:#10b981;">Fully Available</p>
-                                <p style="font-size:0.875rem;color:#94a3b8;">No bookings this month. All slots are free!</p>
-                            </div>
-                        <?php endif; ?>
-                    </div>
+                    <?php if (!empty($booked_dates)): ?>
+                        <div style="overflow-x:auto;">
+                            <table class="occupancy-table">
+                                <thead>
+                                    <tr><th>Date</th><th>Event</th><th>Slot</th><th>Booked By</th><th>Status</th></tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($booked_dates as $bk): ?>
+                                    <tr>
+                                        <td><strong><?php echo date('d M Y (D)', strtotime($bk['event_date'])); ?></strong></td>
+                                        <td><?php echo htmlspecialchars($bk['event_name'] ?? '-'); ?></td>
+                                        <td>
+                                            <span class="badge badge-<?php echo $bk['is_full_day'] ? 'primary' : 'info'; ?>">
+                                                <?php echo $bk['is_full_day'] ? 'Full Day' : htmlspecialchars($bk['slot_name'] ?? '-'); ?>
+                                            </span>
+                                        </td>
+                                        <td style="color:var(--gray);"><?php echo htmlspecialchars(substr($bk['user_name'], 0, 1) . '***'); ?></td>
+                                        <td><span class="badge badge-<?php echo $bk['status'] === 'confirmed' ? 'success' : 'warning'; ?>"><?php echo ucfirst($bk['status']); ?></span></td>
+                                    </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php else: ?>
+                        <div style="text-align:center;padding:3rem;">
+                            <i class="fas fa-calendar-check" style="font-size:2.5rem;margin-bottom:1rem;color:#10b981;display:block;"></i>
+                            <p style="font-size:1rem;font-weight:600;color:#10b981;">Fully Available</p>
+                            <p style="font-size:0.875rem;color:#94a3b8;">No bookings this month. All slots are free!</p>
+                        </div>
+                    <?php endif; ?>
+                </div>
 
 
 
@@ -499,29 +493,29 @@ else {
                                         <input type="date" name="event_date" id="event_date" class="form-control" required min="<?php echo date('Y-m-d', strtotime('+1 day')); ?>">
                                     </div>
 
-                                    <!-- Slot Selection - Dropdown -->
-                                    <div class="form-group">
-                                        <label><i class="fas fa-clock"></i> Booking Type</label>
-                                        <select id="bookingTypeSelect" name="booking_type_display" class="form-control" onchange="handleSlotChange(this)" required>
-                                            <option value="" disabled selected>- Select booking type -</option>
-                                            <option value="fullday" data-fullday="1" data-slotid="">
-                                                [Full Day] Per Day - All Day
-                                            </option>
-                                            <?php foreach ($slots as $slot):
-                                                $time_label = '';
-                                                if ($slot['start_time'] && $slot['end_time']) {
-                                                    $time_label = ' - ' . date('g:ia', strtotime($slot['start_time'])) . ' - ' . date('g:ia', strtotime($slot['end_time']));
-                                                }
-                                                $icon = stripos($slot['name'], 'morning') !== false ? '[Morning]' : '[Evening]';
-                                            ?>
-                                                <option value="slot_<?php echo $slot['id']; ?>" data-fullday="0" data-slotid="<?php echo $slot['id']; ?>">
-                                                    <?php echo $icon . ' ' . htmlspecialchars($slot['name']) . $time_label; ?>
-                                                </option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                        <input type="hidden" name="is_full_day" id="is_full_day" value="0">
-                                        <input type="hidden" name="slot_id" id="slot_id_input" value="">
-                                    </div>
+                                <!-- Slot Selection - Dropdown -->
+                                <div class="form-group">
+                                    <label><i class="fas fa-clock"></i> Booking Type</label>
+                                    <select id="bookingTypeSelect" name="booking_type_display" class="form-control" onchange="handleSlotChange(this)" required>
+                                        <option value="" disabled selected>- Select booking type -</option>
+                                        <option value="fullday" data-fullday="1" data-slotid="">
+                                            [Full Day] Per Day - All Day
+                                        </option>
+                                        <?php foreach ($slots as $slot):
+                                            $time_label = '';
+                                            if ($slot['start_time'] && $slot['end_time']) {
+                                                $time_label = ' - ' . date('g:ia', strtotime($slot['start_time'])) . ' - ' . date('g:ia', strtotime($slot['end_time']));
+                                            }
+                                            $icon = stripos($slot['name'], 'morning') !== false ? '[Morning]' : '[Evening]';
+                                        ?>
+                                        <option value="slot_<?php echo $slot['id']; ?>" data-fullday="0" data-slotid="<?php echo $slot['id']; ?>">
+                                            <?php echo $icon . ' ' . htmlspecialchars($slot['name']) . $time_label; ?>
+                                        </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                    <input type="hidden" name="is_full_day" id="is_full_day" value="0">
+                                    <input type="hidden" name="slot_id" id="slot_id_input" value="">
+                                </div>
 
                                     <!-- Price Breakdown -->
 
@@ -529,8 +523,8 @@ else {
                                         <span>Total Hall Rate</span>
                                         <span id="hallRate">Rs. <?php echo number_format($current_hall['price_per_day']); ?></span>
                                     </div>
-                            </div>
-                            <input type="hidden" name="advance_amount" id="advance_amount_input" value="0">
+                                </div>
+                                <input type="hidden" name="advance_amount" id="advance_amount_input" value="0">
 
                             <button type="submit" class="btn btn-primary btn-lg" style="width:100%;justify-content:center;margin-top:1.25rem;">
                                 <i class="fas fa-check-circle"></i> Confirm Booking
@@ -547,16 +541,15 @@ else {
         </div>
         </div>
 
-    <?php else: // ===== HALL GALLERY LISTING ===== 
-    ?>
-        <!-- Page Header -->
-        <!-- <div class="page-header">
+<?php else: // ===== HALL GALLERY LISTING ===== ?>
+    <!-- Page Header -->
+    <div class="page-header">
         <div class="container reveal" style="position:relative;z-index:1;">
             <div class="section-label"><i class="fas fa-building"></i> Our Venues</div>
             <h1 style="color:white;font-size:2.5rem;margin-bottom:0.5rem;">Browse All <span style="color:var(--secondary);">Halls & Venues</span></h1>
             <p style="color:rgba(255,255,255,0.7);">Find your perfect venue from our collection of premium halls.</p>
         </div>
-    </div> -->
+    </div>
 
         <!-- <div class="container" style="padding-top:2.5rem;padding-bottom:4rem;display:flex;flex-direction:column;gap:2.5rem;"> -->
         <!-- Search / Filter -->
@@ -654,59 +647,56 @@ else {
                         <?php endforeach; ?>
                     </div>
 
-                <?php else: ?>
-                    <div style="text-align:center;padding:5rem 2rem;">
-                        <div style="width:80px;height:80px;background:var(--primary-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;">
-                            <i class="fas fa-building" style="font-size:2rem;color:var(--primary);"></i>
-                        </div>
-                        <h3 style="margin-bottom:0.5rem;">No Halls Found</h3>
-                        <p style="color:var(--gray);">Try adjusting your search or filter.</p>
-                        <a href="halls.php" class="btn btn-primary" style="margin-top:1.5rem;">View All Halls</a>
-                    </div>
-                <?php endif; ?>
+        <?php else: ?>
+            <div style="text-align:center;padding:5rem 2rem;">
+                <div style="width:80px;height:80px;background:var(--primary-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;">
+                    <i class="fas fa-building" style="font-size:2rem;color:var(--primary);"></i>
+                </div>
+                <h3 style="margin-bottom:0.5rem;">No Halls Found</h3>
+                <p style="color:var(--gray);">Try adjusting your search or filter.</p>
+                <a href="halls.php" class="btn btn-primary" style="margin-top:1.5rem;">View All Halls</a>
             </div>
-            <div class="col-md-8">
-                <!-- Upcoming Occupancy Schedule -->
-                <?php if (!empty($global_bookings)): ?>
-                    <div class="reveal">
-                        <h3 style="margin-bottom:1.5rem;display:flex;align-items:center;gap:0.75rem;">
-                            <i class="fas fa-calendar-check" style="color:var(--primary);"></i>
-                            Upcoming Confirmed Bookings (Next 30 Days)
-                        </h3>
-                        <div class="admin-table-card">
-                            <div style="overflow-x:auto;">
-                                <table class="occupancy-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Date</th>
-                                            <th>Hall Name</th>
-                                            <th>Event</th>
-                                            <th>Slot</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($global_bookings as $gb): ?>
-                                            <tr>
-                                                <td><strong><?php echo date('d M Y (D)', strtotime($gb['event_date'])); ?></strong></td>
-                                                <td><?php echo htmlspecialchars($gb['hall_name']); ?></td>
-                                                <td style="color:var(--gray);"><?php echo htmlspecialchars($gb['event_name'] ?? '-'); ?></td>
-                                                <td>
-                                                    <span class="badge badge-<?php echo $gb['is_full_day'] ? 'primary' : 'info'; ?>">
-                                                        <?php echo $gb['is_full_day'] ? 'Full Day' : htmlspecialchars($gb['slot_name']); ?>
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                <?php endif; ?>
-            </div>
-
         <?php endif; ?>
+
+        <!-- Upcoming Occupancy Schedule -->
+        <?php if (!empty($global_bookings)): ?>
+        <div style="margin-top:3.5rem;" class="reveal">
+            <h3 style="margin-bottom:1.5rem;display:flex;align-items:center;gap:0.75rem;">
+                <i class="fas fa-calendar-check" style="color:var(--primary);"></i>
+                Upcoming Confirmed Bookings (Next 30 Days)
+            </h3>
+            <div class="admin-table-card">
+                <div style="overflow-x:auto;">
+                    <table class="occupancy-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Hall Name</th>
+                                <th>Event</th>
+                                <th>Slot</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($global_bookings as $gb): ?>
+                                <tr>
+                                    <td><strong><?php echo date('d M Y (D)', strtotime($gb['event_date'])); ?></strong></td>
+                                    <td><?php echo htmlspecialchars($gb['hall_name']); ?></td>
+                                    <td style="color:var(--gray);"><?php echo htmlspecialchars($gb['event_name'] ?? '-'); ?></td>
+                                    <td>
+                                        <span class="badge badge-<?php echo $gb['is_full_day'] ? 'primary' : 'info'; ?>">
+                                            <?php echo $gb['is_full_day'] ? 'Full Day' : htmlspecialchars($gb['slot_name']); ?>
+                                        </span>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
+        <?php endif; ?>
+    </div>
+<?php endif; ?>
 
         <?php include 'includes/footer.php'; ?>
         <?php include 'includes/modals.php'; ?>
@@ -748,11 +738,9 @@ else {
                     document.getElementById('is_full_day').value = isFullDay ? '1' : '0';
                     document.getElementById('slot_id_input').value = slotId;
 
-                    const slotPrice = isFullDay ? hallPricePerDay : hallPricePerDay * 0.55;
-                    document.getElementById('hallRate').textContent = 'Rs. ' + slotPrice.toLocaleString('en-IN', {
-                        maximumFractionDigits: 0
-                    });
-                }
+            const slotPrice = isFullDay ? hallPricePerDay : hallPricePerDay * 0.55;
+            document.getElementById('hallRate').textContent = 'Rs. ' + slotPrice.toLocaleString('en-IN', {maximumFractionDigits:0});
+        }
 
                 document.getElementById('bookingForm').addEventListener('submit', function(e) {
                     const select = document.getElementById('bookingTypeSelect');

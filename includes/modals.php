@@ -82,3 +82,4 @@ window.addEventListener('scroll', () => {
     if (nav) nav.classList.toggle('scrolled', window.scrollY > 50);
 });
 </script>
+<?php include 'includes/alerts.php'; ?>

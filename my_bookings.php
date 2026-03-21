@@ -90,14 +90,7 @@ if (isset($_GET['success'])) {
     <!-- SHARED NAVBAR -->
     <?php include 'includes/navbar.php'; ?>
 
-    <!-- Page Header -->
-    <div class="page-header">
-        <div class="container" style="position:relative;z-index:1;">
-            <div class="section-label"><i class="fas fa-calendar-check"></i> Your Account</div>
-            <h1 style="color:white;">My <span style="color:#a78bfa;">Bookings</span></h1>
-            <p style="color:rgba(255,255,255,0.7);">Welcome back, <?php echo htmlspecialchars($_SESSION['user_name'] ?? 'User'); ?>! Manage all your hall reservations here.</p>
-        </div>
-    </div>
+
 
     <div class="container" style="padding-top:2.5rem;padding-bottom:4rem;">
         <?php if ($success_msg): ?>
@@ -203,7 +196,7 @@ if (isset($_GET['success'])) {
                                 <span><i class="fas fa-calendar-alt" style="color:var(--primary);"></i> <?php echo date('d M Y, D', strtotime($b['event_date'])); ?></span>
                                 <span><i class="fas fa-clock" style="color:var(--primary);"></i>
                                     <?php if ($b['is_full_day']): ?>
-                                        Full Day
+                                        Full Day (9:00am - 11:00pm)
                                     <?php elseif ($b['slot_name']): ?>
                                         <?php echo htmlspecialchars($b['slot_name']); ?>
                                         <?php if ($b['start_time'] && $b['end_time']): ?>
