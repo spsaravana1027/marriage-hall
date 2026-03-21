@@ -82,6 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 
+    <script src="../assets/js/validation.js"></script>
     <script>
         function togglePwd() {
             const p = document.getElementById('apwd');
@@ -93,5 +94,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </script>
 </body>
 </html>
+
 
 

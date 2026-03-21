@@ -137,14 +137,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <label>Full Name <span style="color:var(--danger)">*</span></label>
                         <div class="input-icon-wrap">
                             <i class="fas fa-user"></i>
-                            <input type="text" name="name" class="form-control" placeholder="Your full name" required value="<?php echo htmlspecialchars($_POST['name'] ?? ''); ?>">
+                            <input type="text" name="name" data-validate="name" class="form-control" placeholder="Your full name" required value="<?php echo htmlspecialchars($_POST['name'] ?? ''); ?>">
                         </div>
                     </div>
                     <div class="form-group">
                         <label>Phone Number <span style="color:var(--danger)">*</span></label>
                         <div class="input-icon-wrap">
                             <i class="fas fa-phone"></i>
-                            <input type="tel" name="phone" class="form-control" placeholder="10-digit mobile" required maxlength="10" value="<?php echo htmlspecialchars($_POST['phone'] ?? ''); ?>">
+                            <input type="tel" name="phone" data-validate="phone" class="form-control" placeholder="10-digit mobile" required maxlength="10" value="<?php echo htmlspecialchars($_POST['phone'] ?? ''); ?>">
                         </div>
                     </div>
                 </div>
@@ -162,10 +162,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <label>Password <span style="color:var(--danger)">*</span></label>
                         <div class="input-icon-wrap">
                             <i class="fas fa-lock"></i>
-                            <input type="password" name="password" id="pwd" class="form-control" placeholder="Min. 6 characters" required oninput="checkStrength(this.value)">
+                            <input type="password" name="password" id="pwd" class="form-control" placeholder="Min. 6 characters" required>
                         </div>
-                        <div class="strength-bar"><div class="strength-fill" id="strengthFill" style="width:0%;background:transparent;"></div></div>
-                        <div id="strengthText" style="font-size:0.75rem;color:var(--gray-light);margin-top:0.3rem;"></div>
                     </div>
                     <div class="form-group">
                         <label>Confirm Password <span style="color:var(--danger)">*</span></label>
@@ -173,9 +171,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <i class="fas fa-lock"></i>
                             <input type="password" name="confirm_password" id="cpwd" class="form-control" placeholder="Re-enter password" required>
                         </div>
-                        <div id="matchText" style="font-size:0.75rem;margin-top:0.3rem;"></div>
                     </div>
                 </div>
+
 
                 <div style="display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:1.5rem;padding:1rem;background:#f8fafc;border-radius:var(--radius);border:1px solid var(--border);">
                     <input type="checkbox" id="agreeTerms" required style="margin-top:3px;width:16px;height:16px;accent-color:var(--primary);flex-shrink:0;">
@@ -193,48 +191,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 
+    <script src="assets/js/validation.js"></script>
     <script>
         // Reveal trigger
         window.addEventListener('load', () => {
             document.querySelectorAll('.reveal').forEach(el => el.classList.add('active'));
         });
-
-        function checkStrength(val) {
-            const bar = document.getElementById('strengthFill');
-            const txt = document.getElementById('strengthText');
-            let score = 0;
-            if (val.length >= 6) score++;
-            if (/[A-Z]/.test(val)) score++;
-            if (/[0-9]/.test(val)) score++;
-            if (/[^A-Za-z0-9]/.test(val)) score++;
-
-            const levels = [
-                { label: '', color: 'transparent', width: '0%' },
-                { label: 'Weak', color: '#ef4444', width: '25%' },
-                { label: 'Fair', color: '#f59e0b', width: '50%' },
-                { label: 'Good', color: '#3b82f6', width: '75%' },
-                { label: 'Strong', color: '#10b981', width: '100%' },
-            ];
-            const level = levels[score];
-            bar.style.width = level.width;
-            bar.style.background = level.color;
-            txt.textContent = score > 0 ? level.label : '';
-            txt.style.color = level.color;
-        }
-
-        document.getElementById('cpwd').addEventListener('input', function() {
-            const pwd = document.getElementById('pwd').value;
-            const txt = document.getElementById('matchText');
-            if (this.value === '') { txt.textContent = ''; return; }
-            if (this.value === pwd) {
-                txt.textContent = 'âœ“ Passwords match';
-                txt.style.color = '#10b981';
-            } else {
-                txt.textContent = 'âœ— Passwords do not match';
-                txt.style.color = '#ef4444';
-            }
-        });
     </script>
+
 </body>
 </html>
 

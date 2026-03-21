@@ -70,18 +70,20 @@ require_once 'includes/auth_functions.php';
                 <div class="milestones-grid">
                     <?php
                     $milestones = [
-                        ['fas fa-bed',       '#7c3aed','#ede9fe','43 Air-Conditioned Rooms',    'With complimentary breakfast for all guests'],
-                        ['fas fa-utensils',   '#3b82f6','#dbeafe','Fully AC Dining Hall',         'Centrally air-conditioned and spacious dining area'],
-                        ['fas fa-users',      '#10b981','#d1fae5','Mahal for 300 Guests',         'Fully air-conditioned Mahal for grand celebrations'],
-                        ['fas fa-parking',    '#f59e0b','#fef3c7','Spacious Parking Facility',    'Ample parking for guests and visitors'],
-                        ['fas fa-wifi',       '#6366f1','#e0e7ff','Free Wi-Fi',                   'High-speed internet throughout the property'],
-                        ['fas fa-tint',       '#0ea5e9','#e0f2fe','24/7 Water Supply',            'Uninterrupted water supply round the clock'],
-                        ['fas fa-cookie-bite','#ec4899','#fce7f3','Snacks on Request',            'Fresh snacks available on request anytime'],
+                        ['fas fa-bed',       '43 Air-Conditioned Rooms',    'With complimentary breakfast for all guests'],
+                        ['fas fa-utensils',  'Fully AC Dining Hall',         'Centrally air-conditioned and spacious dining area'],
+                        ['fas fa-users',     'Mahal for 300 Guests',         'Fully air-conditioned Mahal for grand celebrations'],
+                        ['fas fa-parking',   'Spacious Parking Facility',    'Ample parking for guests and visitors'],
+                        ['fas fa-wifi',      'Free Wi-Fi',                   'High-speed internet throughout the property'],
+                        ['fas fa-tint',      '24/7 Water Supply',            'Uninterrupted water supply round the clock'],
+                        ['fas fa-bowl-food', '3 Time Free Meals',            'Delicious breakfast, lunch, and dinner included'],
+                        ['fas fa-cookie-bite','Snacks on Request',            'Fresh snacks available on request anytime'],
                     ];
-                    foreach ($milestones as [$icon,$col,$bg,$title,$desc]): ?>
-                        <div style="background:#f8fafc;border-radius:var(--radius-lg);padding:1.5rem;border:1px solid var(--border);">
-                            <div style="width:46px;height:46px;border-radius:var(--radius);background:<?php echo $bg; ?>;display:flex;align-items:center;justify-content:center;margin-bottom:0.75rem;">
-                                <i class="<?php echo $icon; ?>" style="color:<?php echo $col; ?>;font-size:1.1rem;"></i>
+
+                    foreach ($milestones as [$icon,$title,$desc]): ?>
+                        <div style="background:#f8fafc;border-radius:var(--radius-lg);padding:1.5rem;border:1px solid var(--border);transition:var(--transition);" onmouseover="this.style.borderColor='var(--primary)';this.style.background='white';this.style.boxShadow='var(--shadow-md)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='#f8fafc';this.style.boxShadow='none'">
+                            <div style="width:46px;height:46px;border-radius:var(--radius);background:var(--primary-light);display:flex;align-items:center;justify-content:center;margin-bottom:0.75rem;">
+                                <i class="<?php echo $icon; ?>" style="color:var(--primary);font-size:1.1rem;"></i>
                             </div>
                             <div style="font-weight:700;font-size:0.9rem;margin-bottom:0.3rem;"><?php echo $title; ?></div>
                             <div style="font-size:0.78rem;color:var(--gray);line-height:1.5;"><?php echo $desc; ?></div>
@@ -102,15 +104,15 @@ require_once 'includes/auth_functions.php';
             <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1.5rem;">
                 <?php
                 $values = [
-                    ['fas fa-star','#7c3aed','#ede9fe','Clean & Professional','We prioritize cleanliness, comfort, and professional management for all our guests.'],
-                    ['fas fa-location-arrow','#7c3aed','#ede9fe','Prime Location','Located in the heart of Srivilliputhur, making us the ideal choice for stays and events.'],
-                    ['fas fa-handshake','#7c3aed','#ede9fe','Customer First','Friendly service and warm hospitality are at the core of everything we do.'],
-                    ['fas fa-shield-alt','#7c3aed','#ede9fe','Aesthetically Built','Modern architecture with premium interiors designed for elegance and convenience.'],
+                    ['fas fa-star','Clean & Professional','We prioritize cleanliness, comfort, and professional management for all our guests.'],
+                    ['fas fa-location-arrow','Prime Location','Located in the heart of Srivilliputhur, making us the ideal choice for stays and events.'],
+                    ['fas fa-handshake','Customer First','Friendly service and warm hospitality are at the core of everything we do.'],
+                    ['fas fa-shield-alt','Aesthetically Built','Modern architecture with premium interiors designed for elegance and convenience.'],
                 ];
-                foreach ($values as [$icon,$col,$bg,$title,$desc]): ?>
+                foreach ($values as [$icon,$title,$desc]): ?>
                     <div class="value-card">
-                        <div style="width:56px;height:56px;border-radius:var(--radius);background:<?php echo $bg; ?>;display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;">
-                            <i class="<?php echo $icon; ?>" style="color:<?php echo $col; ?>;font-size:1.3rem;"></i>
+                        <div style="width:56px;height:56px;border-radius:var(--radius);background:var(--primary-light);display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;">
+                            <i class="<?php echo $icon; ?>" style="color:var(--primary);font-size:1.3rem;"></i>
                         </div>
                         <h4 style="margin-bottom:0.6rem;"><?php echo $title; ?></h4>
                         <p style="color:var(--gray);font-size:0.875rem;line-height:1.7;"><?php echo $desc; ?></p>
@@ -132,29 +134,29 @@ require_once 'includes/auth_functions.php';
             <div class="events-grid">
 
                 <div style="text-align:center;padding:2rem 1.5rem;background:#f8fafc;border-radius:var(--radius-lg);border:1px solid var(--border);transition:var(--transition);" onmouseover="this.style.borderColor='var(--primary)';this.style.background='white'" onmouseout="this.style.borderColor='var(--border)';this.style.background='#f8fafc'">
-                    <div style="width:56px;height:56px;border-radius:50%;background:#fce7f3;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
-                        <i class="fas fa-heart" style="color:#ec4899;font-size:1.3rem;"></i>
+                    <div style="width:56px;height:56px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+                        <i class="fas fa-heart" style="color:var(--primary);font-size:1.3rem;"></i>
                     </div>
                     <h4 style="font-size:0.95rem;margin:0;">Weddings &amp; Receptions</h4>
                 </div>
 
                 <div style="text-align:center;padding:2rem 1.5rem;background:#f8fafc;border-radius:var(--radius-lg);border:1px solid var(--border);transition:var(--transition);" onmouseover="this.style.borderColor='var(--primary)';this.style.background='white'" onmouseout="this.style.borderColor='var(--border)';this.style.background='#f8fafc'">
-                    <div style="width:56px;height:56px;border-radius:50%;background:#fce7f3;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
-                        <i class="fas fa-ring" style="color:#ec4899;font-size:1.3rem;"></i>
+                    <div style="width:56px;height:56px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+                        <i class="fas fa-ring" style="color:var(--primary);font-size:1.3rem;"></i>
                     </div>
                     <h4 style="font-size:0.95rem;margin:0;">Engagements</h4>
                 </div>
 
                 <div style="text-align:center;padding:2rem 1.5rem;background:#f8fafc;border-radius:var(--radius-lg);border:1px solid var(--border);transition:var(--transition);" onmouseover="this.style.borderColor='var(--primary)';this.style.background='white'" onmouseout="this.style.borderColor='var(--border)';this.style.background='#f8fafc'">
-                    <div style="width:56px;height:56px;border-radius:50%;background:#fce7f3;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
-                        <i class="fas fa-birthday-cake" style="color:#ec4899;font-size:1.3rem;"></i>
+                    <div style="width:56px;height:56px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+                        <i class="fas fa-birthday-cake" style="color:var(--primary);font-size:1.3rem;"></i>
                     </div>
                     <h4 style="font-size:0.95rem;margin:0;">Birthday &amp; Family Functions</h4>
                 </div>
 
                 <div style="text-align:center;padding:2rem 1.5rem;background:#f8fafc;border-radius:var(--radius-lg);border:1px solid var(--border);transition:var(--transition);" onmouseover="this.style.borderColor='var(--primary)';this.style.background='white'" onmouseout="this.style.borderColor='var(--border)';this.style.background='#f8fafc'">
-                    <div style="width:56px;height:56px;border-radius:50%;background:#fce7f3;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
-                        <i class="fas fa-briefcase" style="color:#ec4899;font-size:1.3rem;"></i>
+                    <div style="width:56px;height:56px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+                        <i class="fas fa-briefcase" style="color:var(--primary);font-size:1.3rem;"></i>
                     </div>
                     <h4 style="font-size:0.95rem;margin:0;">Corporate Meetings</h4>
                 </div>
@@ -171,24 +173,24 @@ require_once 'includes/auth_functions.php';
             <div class="rooms-accommodation-grid">
 
                 <div style="text-align:center;padding:2.5rem 2rem;background:#f8fafc;border-radius:var(--radius-lg);border:1px solid var(--border);transition:var(--transition);" onmouseover="this.style.borderColor='var(--primary)';this.style.background='white'" onmouseout="this.style.borderColor='var(--border)';this.style.background='#f8fafc'">
-                    <div style="width:60px;height:60px;border-radius:50%;background:#ede9fe;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;">
-                        <i class="fas fa-bed" style="color:#7c3aed;font-size:1.4rem;"></i>
+                    <div style="width:60px;height:60px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;">
+                        <i class="fas fa-bed" style="color:var(--primary);font-size:1.4rem;"></i>
                     </div>
                     <h4 style="margin-bottom:0.5rem;font-size:1rem;">Deluxe Room – AC</h4>
                     <p style="color:var(--gray);font-size:0.85rem;line-height:1.7;margin:0;">Comfortable stay with essential amenities</p>
                 </div>
 
                 <div style="text-align:center;padding:2.5rem 2rem;background:#f8fafc;border-radius:var(--radius-lg);border:1px solid var(--border);transition:var(--transition);" onmouseover="this.style.borderColor='var(--primary)';this.style.background='white'" onmouseout="this.style.borderColor='var(--border)';this.style.background='#f8fafc'">
-                    <div style="width:60px;height:60px;border-radius:50%;background:#ede9fe;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;">
-                        <i class="fas fa-star" style="color:#7c3aed;font-size:1.4rem;"></i>
+                    <div style="width:60px;height:60px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;">
+                        <i class="fas fa-star" style="color:var(--primary);font-size:1.4rem;"></i>
                     </div>
                     <h4 style="margin-bottom:0.5rem;font-size:1rem;">Super Deluxe Room – AC</h4>
                     <p style="color:var(--gray);font-size:0.85rem;line-height:1.7;margin:0;">Enhanced comfort with premium interiors</p>
                 </div>
 
                 <div style="text-align:center;padding:2.5rem 2rem;background:#f8fafc;border-radius:var(--radius-lg);border:1px solid var(--border);transition:var(--transition);" onmouseover="this.style.borderColor='var(--primary)';this.style.background='white'" onmouseout="this.style.borderColor='var(--border)';this.style.background='#f8fafc'">
-                    <div style="width:60px;height:60px;border-radius:50%;background:#ede9fe;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;">
-                        <i class="fas fa-crown" style="color:#7c3aed;font-size:1.4rem;"></i>
+                    <div style="width:60px;height:60px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;">
+                        <i class="fas fa-crown" style="color:var(--primary);font-size:1.4rem;"></i>
                     </div>
                     <h4 style="margin-bottom:0.5rem;font-size:1rem;">VIP Room – AC</h4>
                     <p style="color:var(--gray);font-size:0.85rem;line-height:1.7;margin:0;">Spacious luxury room for a premium stay</p>

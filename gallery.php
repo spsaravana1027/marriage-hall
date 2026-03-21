@@ -33,8 +33,12 @@ try {
             .gallery-card {
                 width: 100%;
             }
+            .highlights-grid {
+                grid-template-columns: 1fr !important;
+            }
         }
         .gallery-card {
+
             position: relative;
             height: 280px;
             border-radius: var(--radius-lg);
@@ -122,6 +126,46 @@ try {
         </div>
     </section>
 
+    <!-- Venue Highlights Section -->
+    <section class="section" style="background: white; border-top: 1px solid var(--border);">
+        <div class="container">
+            <div class="text-center" style="margin-bottom: 3rem;">
+                <div class="section-label"><i class="fas fa-star"></i> Venue Highlights</div>
+                <h2 class="section-heading">Why Choose <span>Sri Lakshmi Residency?</span></h2>
+                <p style="color:var(--gray);max-width:600px;margin:0 auto;">Beyond stunning venues, we offer premium amenities to make your stay and events perfect.</p>
+            </div>
+
+            <div class="highlights-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+                <?php
+                $milestones = [
+                    ['fas fa-bed',       '43 Air-Conditioned Rooms',    'With complimentary breakfast for all guests'],
+                    ['fas fa-utensils',  'Fully AC Dining Hall',         'Centrally air-conditioned and spacious dining area'],
+                    ['fas fa-users',     'Mahal for 300 Guests',         'Fully air-conditioned Mahal for grand celebrations'],
+                    ['fas fa-parking',   'Spacious Parking Facility',    'Ample parking for guests and visitors'],
+                    ['fas fa-wifi',      'Free Wi-Fi',                   'High-speed internet throughout the property'],
+                    ['fas fa-tint',      '24/7 Water Supply',            'Uninterrupted water supply round the clock'],
+                    ['fas fa-bowl-food', '3 Time Free Meals',            'Delicious breakfast, lunch, and dinner included'],
+                    ['fas fa-cookie-bite','Snacks on Request',            'Fresh snacks available on request anytime'],
+                ];
+                foreach ($milestones as [$icon,$title,$desc]): ?>
+                    <div class="reveal" style="background:#f8fafc; border-radius:var(--radius-lg); padding:1.75rem; border:1px solid var(--border); display: flex; align-items: flex-start; gap: 1.25rem; transition: var(--transition);" onmouseover="this.style.borderColor='var(--primary)';this.style.background='white';this.style.transform='translateY(-5px)';this.style.boxShadow='var(--shadow-md)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='#f8fafc';this.style.transform='translateY(0)';this.style.boxShadow='none'">
+                        <div style="width:52px; height:52px; border-radius:var(--radius); background:var(--primary-light); display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:var(--transition);">
+                            <i class="<?php echo $icon; ?>" style="color:var(--primary); font-size:1.25rem;"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight:700; font-size:1rem; margin-bottom:0.4rem; color: var(--dark);"><?php echo $title; ?></div>
+                            <div style="font-size:0.85rem; color:var(--gray); line-height:1.6;"><?php echo $desc; ?></div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+            
+            <div class="text-center" style="margin-top: 3rem;">
+                <a href="about.php" class="btn btn-outline"><i class="fas fa-info-circle"></i> Learn More About Our Story</a>
+            </div>
+        </div>
+    </section>
+
     <!-- Gallery Model (Modal) -->
     <div id="galleryModel" onclick="closeGalleryModel()">
         <div class="model-content" onclick="event.stopPropagation()">
@@ -144,6 +188,8 @@ try {
     </div>
 
     <?php include 'includes/modals.php'; ?>
+
+
     <?php include 'includes/chatbot.php'; ?>
     <?php include 'includes/footer.php'; ?>
 

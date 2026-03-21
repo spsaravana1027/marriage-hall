@@ -151,7 +151,7 @@ try {
                         <div class="form-grid">
                             <div class="form-group">
                                 <label>Hall Name <span style="color:var(--danger)">*</span></label>
-                                <input type="text" name="name" class="form-control" placeholder="e.g., Sri Murugan Mahal" required value="<?php echo htmlspecialchars($edit_hall['name'] ?? ''); ?>">
+                                <input type="text" name="name" data-validate="name" class="form-control" placeholder="e.g., Sri Murugan Mahal" required value="<?php echo htmlspecialchars($edit_hall['name'] ?? ''); ?>">
                             </div>
                             <div class="form-group">
                                 <label>Location / City <span style="color:var(--danger)">*</span></label>
@@ -162,13 +162,14 @@ try {
                         <div class="form-grid">
                             <div class="form-group">
                                 <label>Capacity (guests) <span style="color:var(--danger)">*</span></label>
-                                <input type="number" name="capacity" class="form-control" placeholder="e.g., 500" required min="10" value="<?php echo htmlspecialchars($edit_hall['capacity'] ?? ''); ?>">
+                                <input type="number" name="capacity" data-validate="number" class="form-control" placeholder="e.g., 500" required min="10" value="<?php echo htmlspecialchars($edit_hall['capacity'] ?? ''); ?>">
                             </div>
                             <div class="form-group">
                                 <label>Price Per Day (Rs.) <span style="color:var(--danger)">*</span></label>
-                                <input type="number" name="price_per_day" class="form-control" placeholder="e.g., 25000" required min="0" step="100" value="<?php echo htmlspecialchars($edit_hall['price_per_day'] ?? ''); ?>">
+                                <input type="number" name="price_per_day" data-validate="number" class="form-control" placeholder="e.g., 25000" required min="0" step="100" value="<?php echo htmlspecialchars($edit_hall['price_per_day'] ?? ''); ?>">
                             </div>
                         </div>
+
 
                         <div class="form-grid">
                             <div class="form-group">
@@ -261,8 +262,10 @@ try {
         </div>
     </div>
 </div>
+    <script src="../assets/js/validation.js"></script>
     <script>
         function handleFileSelect(input) {
+
             const wrapper = input.closest('.file-upload-wrapper');
             const placeholder = wrapper.querySelector('.upload-text');
             const subtext = wrapper.querySelector('.upload-subtext');

@@ -121,9 +121,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <form method="POST">
                         <div class="form-group" style="margin-bottom:1.5rem;">
                             <label>Website / Hall Name</label>
-                            <input type="text" name="brand_name" class="form-control" value="<?php echo htmlspecialchars($current_name); ?>" required>
+                            <input type="text" name="brand_name" data-validate="name" class="form-control" value="<?php echo htmlspecialchars($current_name); ?>" required>
                             <small style="color:var(--gray); font-size:0.75rem;">This name will appear across the entire website, page titles, and chatbot.</small>
                         </div>
+
                         <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Brand Name</button>
                     </form>
                 </div>
@@ -163,6 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 </div>
+    <script src="../assets/js/validation.js"></script>
     <script>
         function handleFileSelect(input) {
             const wrapper = input.closest('.file-upload-wrapper');
@@ -182,3 +184,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </script>
 </body>
 </html>
+
