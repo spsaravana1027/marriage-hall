@@ -106,13 +106,14 @@ try {
 
         <div class="admin-content">
             <!-- Greeting -->
-            <div class="reveal" style="margin-bottom:2rem;">
-                <div class="greeting">Welcome, <?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Admin'); ?>! <i class="fa-solid fa-hand-peace" style="color:#fbbf24; font-size:1.5rem;"></i></div>
+            <div class="reveal" style="margin-bottom:1rem;">
+                <div class="greeting">Welcome, <?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Admin'); ?>!</div>
                 <div style="color:var(--gray);font-size:0.9rem;">Here's what's happening with your halls today.</div>
             </div>
 
+
             <!-- Stat Cards -->
-            <div class="stagger-children" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.25rem;margin-bottom:5rem;">
+            <div class="stagger-children" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.25rem;margin-bottom:1.5rem;">
                 <?php
                 $stat_items = [
                     ['label'=>'Total Halls',  'val'=>$stats['halls'],    'icon'=>'fas fa-building', 'bg'=>'#ede9fe','color'=>'#7c3aed','sub'=>'Active venues'],

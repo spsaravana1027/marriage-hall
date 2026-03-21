@@ -11,27 +11,68 @@ $error = '';
 
 // Fetch current settings
 try {
-    $stmt = $pdo->query("SELECT setting_key, setting_value FROM settings WHERE setting_key IN ('brand_name', 'brand_logo')");
+    $keys = ['brand_name', 'brand_logo', 'footer_phone', 'footer_email', 'social_facebook', 'social_instagram', 'social_youtube', 'social_whatsapp', 'google_maps_iframe'];
+    $placeholders = str_repeat('?,', count($keys) - 1) . '?';
+    $stmt = $pdo->prepare("SELECT setting_key, setting_value FROM settings WHERE setting_key IN ($placeholders)");
+    $stmt->execute($keys);
     $settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+    
     $current_name = $settings['brand_name'] ?? 'Sri Lakshmi Residency & Mahal';
     $current_logo = $settings['brand_logo'] ?? '';
+    $f_phone = $settings['footer_phone'] ?? '+91 98765 43210';
+    $f_email = $settings['footer_email'] ?? 'slr@gmail.com';
+    $s_fb = $settings['social_facebook'] ?? '#';
+    $s_ig = $settings['social_instagram'] ?? '#';
+    $s_yt = $settings['social_youtube'] ?? '#';
+    $s_wa = $settings['social_whatsapp'] ?? 'https://wa.me/919876543210';
+    $s_map = $settings['google_maps_iframe'] ?? '';
 } catch (Exception $e) {
     $current_name = 'Sri Lakshmi Residency & Mahal';
     $current_logo = '';
+    // others fall back to defaults
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Handle Brand Name Update
-    if (isset($_POST['brand_name'])) {
-        $new_name = trim($_POST['brand_name']);
-        if (!empty($new_name)) {
+    $success_count = 0;
+    
+    // Handle Simple Settings
+    $text_settings = [
+        'brand_name' => 'Brand name',
+        'footer_phone' => 'Phone number',
+        'footer_email' => 'Email address',
+        'social_facebook' => 'Facebook link',
+        'social_instagram' => 'Instagram link',
+        'social_youtube' => 'YouTube link',
+        'social_whatsapp' => 'WhatsApp link',
+        'google_maps_iframe' => 'Maps Iframe'
+    ];
+
+    foreach ($text_settings as $key => $label) {
+        if (isset($_POST[$key])) {
+            $val = trim($_POST[$key]);
             try {
-                $stmt = $pdo->prepare("UPDATE settings SET setting_value = ? WHERE setting_key = 'brand_name'");
-                $stmt->execute([$new_name]);
-                $current_name = $new_name;
-                $msg = 'Brand name updated successfully!';
+                $stmt = $pdo->prepare("UPDATE settings SET setting_value = ? WHERE setting_key = ?");
+                $stmt->execute([$val, $key]);
+                $success_count++;
             } catch (Exception $e) {
-                $error = 'Failed to update brand name: ' . $e->getMessage();
+                $error = "Failed to update $label: " . $e->getMessage();
+            }
+        }
+    }
+
+    if ($success_count > 0) {
+        $msg = 'Settings updated successfully!';
+        // Refresh values after update
+        foreach($text_settings as $key => $l) {
+            if(isset($_POST[$key])) {
+                if($key == 'brand_name') $current_name = $_POST[$key];
+                if($key == 'footer_phone') $f_phone = $_POST[$key];
+                if($key == 'footer_email') $f_email = $_POST[$key];
+                if($key == 'social_facebook') $s_fb = $_POST[$key];
+                if($key == 'social_instagram') $s_ig = $_POST[$key];
+                if($key == 'social_youtube') $s_yt = $_POST[$key];
+                if($key == 'social_whatsapp') $s_wa = $_POST[$key];
+                if($key == 'google_maps_iframe') $s_map = $_POST[$key];
             }
         }
     }
@@ -160,6 +201,81 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <button type="submit" class="btn btn-primary"><i class="fas fa-upload"></i> Update Logo</button>
                     </form>
                 </div>
+            </div>
+
+            <!-- Footer & Social Media Settings -->
+            <div class="admin-table-card" style="padding:2rem; margin-top:2rem;">
+                <h4 style="margin-bottom:1.5rem;"><i class="fas fa-bullhorn" style="color:var(--primary);"></i> Footer & Social Media Settings</h4>
+                <form method="POST">
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:2rem;">
+                        <!-- Contact Info Group -->
+                        <div>
+                            <div style="font-weight:700; font-size:0.85rem; margin-bottom:1rem; text-transform:uppercase; color:var(--gray); border-bottom:1px solid var(--border); padding-bottom:0.5rem;">
+                                <i class="fas fa-address-book"></i> Contact Information
+                            </div>
+                            <div class="form-group">
+                                <label>Footer Phone Number</label>
+                                <input type="text" name="footer_phone" class="form-control" value="<?php echo htmlspecialchars($f_phone); ?>" placeholder="+91 98765 43210">
+                            </div>
+                            <div class="form-group">
+                                <label>Footer Email Address</label>
+                                <input type="email" name="footer_email" class="form-control" value="<?php echo htmlspecialchars($f_email); ?>" placeholder="info@example.com">
+                            </div>
+                        </div>
+
+                        <!-- Social Links Group -->
+                        <div>
+                            <div style="font-weight:700; font-size:0.85rem; margin-bottom:1rem; text-transform:uppercase; color:var(--gray); border-bottom:1px solid var(--border); padding-bottom:0.5rem;">
+                                <i class="fas fa-share-nodes"></i> Social Media Links
+                            </div>
+                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+                                <div class="form-group">
+                                    <label><i class="fab fa-facebook-f" style="color:#1877f2;"></i> Facebook</label>
+                                    <input type="text" name="social_facebook" class="form-control" value="<?php echo htmlspecialchars($s_fb); ?>" placeholder="https://facebook.com/yourpage">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fab fa-instagram" style="color:#e4405f;"></i> Instagram</label>
+                                    <input type="text" name="social_instagram" class="form-control" value="<?php echo htmlspecialchars($s_ig); ?>" placeholder="https://instagram.com/yourprofile">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fab fa-youtube" style="color:#ff0000;"></i> YouTube</label>
+                                    <input type="text" name="social_youtube" class="form-control" value="<?php echo htmlspecialchars($s_yt); ?>" placeholder="https://youtube.com/@yourchannel">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fab fa-whatsapp" style="color:#25d366;"></i> WhatsApp Link</label>
+                                    <input type="text" name="social_whatsapp" class="form-control" value="<?php echo htmlspecialchars($s_wa); ?>" placeholder="https://wa.me/91...">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:2rem;">
+                        <div style="font-weight:700; font-size:0.85rem; margin-bottom:1rem; text-transform:uppercase; color:var(--gray); border-bottom:1px solid var(--border); padding-bottom:0.5rem;">
+                            <i class="fas fa-map-location-dot"></i> Google Maps Integration
+                        </div>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:2rem;">
+                            <div class="form-group">
+                                <label>Maps Iframe / URL</label>
+                                <textarea name="google_maps_iframe" class="form-control" style="height:120px; font-family:monospace; font-size:0.8rem;" placeholder="Paste the <iframe src='...'> or direct embed URL here"><?php echo htmlspecialchars($s_map); ?></textarea>
+                                <small style="display:block; margin-top:0.5rem; color:var(--gray);">Go to Google Maps → Share → Embed a map → Copy the <b>src="..."</b> URL only.</small>
+                            </div>
+                            <div>
+                                <label>Current Map Preview</label>
+                                <div style="height:120px; background:#f1f5f9; border-radius:var(--radius); border:1px solid var(--border); overflow:hidden; position:relative;">
+                                    <?php if($s_map): ?>
+                                        <iframe src="<?php echo htmlspecialchars($s_map); ?>" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                                    <?php else: ?>
+                                        <div style="display:flex; align-items:center; justify-content:center; height:100%; color:var(--gray-light);">No map configured</div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:2.5rem; border-top:1px solid var(--border); padding-top:2rem; text-align:right;">
+                        <button type="submit" class="btn btn-primary btn-lg" style="padding: 0.8rem 2.5rem;"><i class="fas fa-cloud-upload-alt"></i> Save All Footer Settings</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

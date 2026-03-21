@@ -36,7 +36,7 @@ try {
         FROM bookings b
         JOIN users u ON b.user_id = u.id
         LEFT JOIN slots s ON b.slot_id = s.id
-        WHERE b.hall_id = ? AND b.event_date >= ? AND b.event_date <= ? AND b.status = 'confirmed'
+        WHERE b.hall_id = ? AND b.event_date >= ? AND b.event_date <= ? AND b.status != 'cancelled'
         ORDER BY b.event_date ASC
     ");
     $stmt->execute([$hall_id, $month_start, $month_end]);
@@ -67,11 +67,16 @@ if (!empty($booked_dates)): ?>
                     <td><?php echo htmlspecialchars($bk['event_name'] ?? '-'); ?></td>
                     <td>
                         <span class="badge badge-<?php echo $bk['is_full_day'] ? 'primary' : 'info'; ?>">
-                            <?php echo $bk['is_full_day'] ? 'Full Day' : htmlspecialchars($bk['slot_name'] ?? '-'); ?>
+                            <?php echo $bk['is_full_day'] ? 'Full Day (9:00am - 11:00pm)' : htmlspecialchars($bk['slot_name'] ?? '-'); ?>
                         </span>
                     </td>
                     <td style="color:var(--gray);"><?php echo htmlspecialchars(substr($bk['user_name'], 0, 1) . '***'); ?></td>
-                    <td><span class="badge badge-<?php echo $bk['status'] === 'confirmed' ? 'success' : 'warning'; ?>"><?php echo ucfirst($bk['status']); ?></span></td>
+                    <td><span class="badge badge-<?php 
+                        $st = $bk['status'];
+                        if ($st === 'confirmed') echo 'success';
+                        elseif ($st === 'pending' || $st === 'processing') echo 'warning';
+                        else echo 'info';
+                    ?>"><?php echo ucfirst($bk['status']); ?></span></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>

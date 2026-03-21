@@ -30,18 +30,22 @@
                 <div style="font-size:0.92rem; display:flex; flex-direction:column; gap:0.75rem; color:rgba(255,255,255,0.8);">
                     <div style="display:flex; align-items:flex-start; gap:0.75rem;">
                         <i class="fas fa-phone" style="color:var(--primary); width:18px; text-align:center; margin-top:3px;"></i>
-                        <span>+91 98765 43210</span>
+                        <span><?php echo htmlspecialchars($footer_phone); ?></span>
                     </div>
                     <div style="display:flex; align-items:flex-start; gap:0.75rem;">
                         <i class="fas fa-envelope" style="color:var(--primary); width:18px; text-align:center; margin-top:3px;"></i>
-                        <span>slr@gmail.com</span>
+                        <span><?php echo htmlspecialchars($footer_email); ?></span>
                     </div>
                 </div>
             </div>
             <div>
                 <div style="font-weight:700; color:white; margin-bottom:1.25rem; font-size:0.95rem; font-family:'Poppins', sans-serif; text-transform:uppercase; letter-spacing:0.03em;">Location</div>
                 <div style="border-radius:var(--radius); overflow:hidden; height:110px; border:1px solid rgba(255,255,255,0.15); box-shadow:0 4px 15px rgba(0,0,0,0.1);">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3934.8595558505026!2d77.63345247367901!3d9.520929281097514!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b06dda3211bacff%3A0xb3b5f817bb93c64d!2sSri%20Lakshmi%20Residency%20And%20Mahal!5e0!3m2!1sen!2sin!4v1774067577631!5m2!1sen!2sin" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    <?php if($google_maps_iframe): ?>
+                        <iframe src="<?php echo htmlspecialchars($google_maps_iframe); ?>" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    <?php else: ?>
+                        <div style="background:#333; color:white; height:100%; display:flex; align-items:center; justify-content:center; font-size:0.8rem;">Map not configured</div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -50,7 +54,7 @@
 
         <div class="footer-bottom-grid" style="display:grid; grid-template-columns:1.2fr auto 1.2fr; align-items:center; gap:2rem; font-size:0.88rem;">
             <div style="text-align:left; color:white; font-family:'Poppins', sans-serif; font-weight:700; font-size:0.85rem; letter-spacing:0.03em;">
-                &copy; <?php echo date('Y'); ?> SRI LAKSHMI RESIDENCY & MAHAL.
+                &copy; <?php echo date('Y'); ?> <?php echo htmlspecialchars($brand_name); ?>.
             </div>
             <div style="text-align:center;">
                 <a href="https://anjanainfotech.in/" target="_blank" style="color:rgba(255,255,255,0.9); transition:0.3s; font-weight:600; text-decoration:none;">Developed by Anjana Infotech</a>
@@ -59,10 +63,21 @@
                 <span style="font-weight:700; color:white; letter-spacing:0.05em; text-transform:uppercase; font-size:0.78rem; font-family:'Poppins', sans-serif;">Follow Us</span>
 
                 <div style="display:flex; gap:1rem; align-items:center;">
-                    <a href="#" class="footer-social-link-lg" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="footer-social-link-lg" title="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="footer-social-link-lg" title="YouTube"><i class="fab fa-youtube"></i></a>
-                    <a href="https://wa.me/919876543210" class="footer-social-link-lg" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    <?php if(!empty($social_facebook)): ?>
+                        <a href="<?php echo htmlspecialchars($social_facebook); ?>" target="_blank" class="footer-social-link-lg" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <?php endif; ?>
+                    
+                    <?php if(!empty($social_instagram)): ?>
+                        <a href="<?php echo htmlspecialchars($social_instagram); ?>" target="_blank" class="footer-social-link-lg" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <?php endif; ?>
+                    
+                    <?php if(!empty($social_youtube)): ?>
+                        <a href="<?php echo htmlspecialchars($social_youtube); ?>" target="_blank" class="footer-social-link-lg" title="YouTube"><i class="fab fa-youtube"></i></a>
+                    <?php endif; ?>
+                    
+                    <?php if(!empty($social_whatsapp)): ?>
+                        <a href="<?php echo htmlspecialchars($social_whatsapp); ?>" target="_blank" class="footer-social-link-lg" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -93,6 +108,8 @@
         </style>
     </div>
 </footer>
+
+
 
 <style>
 @media (max-width: 900px) {

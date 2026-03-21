@@ -194,6 +194,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php endif; ?>
     </script>
 
+    <?php include 'includes/alerts.php'; ?>
 </body>
 </html>
 

@@ -108,6 +108,54 @@ try {
             transition: var(--transition);
         }
         .gallery-delete:hover { background: var(--danger); transform: scale(1.1); }
+
+        /* Premium Category Filter Styles */
+        .category-filter-container {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+        .category-filter-label {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+        }
+        .category-filter-scroll {
+            display: flex;
+            gap: 0.75rem;
+            overflow-x: auto;
+            flex-wrap: nowrap;
+            padding-bottom: 5px; /* For scrollbar breathing room */
+            scrollbar-width: none; /* Hide scrollbar for clean look */
+        }
+        .category-filter-scroll::-webkit-scrollbar { display: none; }
+        
+        .filter-btn {
+            padding: 0.6rem 1.25rem;
+            background: #f1f5f9;
+            color: var(--dark-2);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+        .filter-btn:hover { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
+        .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 12px rgba(233, 30, 99, 0.2); }
     </style>
 </head>
 <body>
@@ -129,7 +177,7 @@ try {
                 <div class="alert alert-danger animate-fade-in"><i class="fas fa-exclamation-circle"></i> <?php echo $error; ?></div>
             <?php endif; ?>
 
-            <div class="admin-table-card" style="padding:2rem;">
+            <div class="admin-table-card" style="padding:1.25rem;">
                 <h4 style="margin-bottom:1.5rem;"><i class="fas fa-plus-circle"></i> Add New Gallery Image</h4>
                 <form method="POST" enctype="multipart/form-data">
                     <div style="display:grid; grid-template-columns: 1.1fr 0.9fr; gap:1.5rem;">
@@ -168,7 +216,18 @@ try {
                 </form>
             </div>
 
-            <div class="gallery-grid">
+            <!-- Category Filter Bar (Horizontal Scroll) -->
+            <div class="category-filter-container">
+                <div class="category-filter-label"><i class="fas fa-filter"></i> Filter by:</div>
+                <div class="category-filter-scroll">
+                    <button class="filter-btn active" onclick="filterGallery('all', this)">All Collections</button>
+                    <button class="filter-btn" onclick="filterGallery('mahal', this)">Mahal Gallery</button>
+                    <button class="filter-btn" onclick="filterGallery('room', this)">Rooms Gallery</button>
+                    <!-- Add more if needed in future -->
+                </div>
+            </div>
+
+            <div class="gallery-grid" id="galleryGrid">
                 <?php if (empty($gallery_images)): ?>
                     <div style="grid-column: 1/-1; text-align:center; padding:4rem; color:var(--gray-light);">
                         <i class="fas fa-images" style="font-size:3rem; margin-bottom:1rem; opacity:0.3;"></i>
@@ -176,7 +235,7 @@ try {
                     </div>
                 <?php else: ?>
                     <?php foreach ($gallery_images as $img): ?>
-                        <div class="gallery-item animate-fade-in">
+                        <div class="gallery-item animate-fade-in" data-category="<?php echo htmlspecialchars($img['category'] ?? 'mahal'); ?>">
                             <a href="?delete=<?php echo $img['id']; ?>" class="gallery-delete" title="Delete Image" onclick="return confirm('Remove this image from gallery?')">
                                 <i class="fas fa-trash"></i>
                             </a>
@@ -208,8 +267,35 @@ try {
                 placeholder.style.color = 'var(--secondary)';
                 subtext.textContent = 'File selected successfully';
                 icon.className = 'fas fa-check-circle';
-                wrapper.classList.add('has-file');
             }
+        }
+
+        // Premium Filter Logic
+        function filterGallery(category, btn) {
+            // Update Active Button
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Filter Grid Items
+            const items = document.querySelectorAll('.gallery-item');
+            
+            items.forEach(item => {
+                const itemCategory = item.getAttribute('data-category');
+                
+                if (category === 'all' || itemCategory === category) {
+                    item.style.display = 'block';
+                    // Optional: Re-trigger animation
+                    item.style.animation = 'none';
+                    item.offsetHeight; // trigger reflow
+                    item.style.animation = null;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            // Handle empty state if needed
+            const visibleItems = Array.from(items).filter(i => i.style.display !== 'none');
+            // ... could show a "No images in this category" msg
         }
     </script>
 </body>

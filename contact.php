@@ -123,9 +123,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send'])) {
 
             $mail->send();
             $form_success = true;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // Check if it's a database error (table might not exist)
-            if (strpos($e->getMessage(), 'contact_inquiries') !== false) {
+            if (strpos($e->getMessage(), '1146') !== false || strpos($e->getMessage(), 'contact') !== false) {
                 // Table doesn't exist - create it
                 try {
                     $pdo->exec("
@@ -135,20 +135,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send'])) {
                             email VARCHAR(100) NOT NULL,
                             phone VARCHAR(20),
                             message TEXT NOT NULL,
+                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
                     ");
 
                     // Try inserting again
                     $stmt = $pdo->prepare("
-                        INSERT INTO contact_inquiries (name, email, phone, subject, message, created_at)
-                        VALUES (?, ?, ?, ?, ?, NOW())
+                        INSERT INTO contact (name, email, phone, message)
+                        VALUES (?, ?, ?, ?)
                     ");
-                    $stmt->execute([$name, $email, $phone, $subject, $message]);
+                    $stmt->execute([$name, $email, $phone, $message]);
 
                     // Try sending email again
                     $mail->send();
                     $form_success = true;
-                } catch (Exception $e2) {
+                } catch (\Exception $e2) {
                     $form_error = 'Message could not be sent. Error: ' . $e2->getMessage();
                 }
             } else {
@@ -301,6 +302,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send'])) {
         </div>
     </div> -->
 
+
     <!-- CONTACT INFO + FORM -->
     <section class="section" style="background:white;">
         <div class="container">
@@ -364,6 +366,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send'])) {
                         </div>
                         <div class="contact-form-body" style="padding:2rem;">
                             <?php if ($form_success): ?>
+                                <!-- Hidden trigger for global alert popup -->
+                                <div class="alert alert-success" style="display:none;">Message Sent! Thank you for reaching out. Our team will respond within 24 hours.</div>
+                                
                                 <div style="text-align:center;padding:3rem 1rem;">
                                     <div style="width:72px;height:72px;background:#d1fae5;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;">
                                         <i class="fas fa-check-circle" style="font-size:2rem;color:#10b981;"></i>
