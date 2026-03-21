@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
 <?php
 require_once __DIR__ . '/../includes/auth_functions.php';
 require_once __DIR__ . '/../includes/PHPMailer/Exception.php';
@@ -128,91 +129,159 @@ try {
         $mail->Subject = "New Hall Booking: $booking_id";
         
         // HTML body
-        $mail->Body = "
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset='UTF-8'>
-            <style>
-                body { font-family: Arial, sans-serif; color: #333; line-height: 1.6; }
-                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                .header { background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%); color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0; }
-                .content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
-                table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-                table tr td { padding: 12px; border-bottom: 1px solid #e5e7eb; }
-                table tr td:first-child { background: #f3f4f6; font-weight: bold; width: 40%; }
-                table tr td:last-child { background: white; }
-                .status-badge { background: #fbbf24; color: #000; padding: 5px 10px; border-radius: 20px; font-weight: bold; display: inline-block; }
-                .button { display: inline-block; padding: 12px 24px; background: #7c3aed; color: white; text-decoration: none; border-radius: 5px; margin-top: 20px; }
-                .footer { margin-top: 30px; text-align: center; color: #6b7280; font-size: 14px; }
-            </style>
-        </head>
-        <body>
-            <div class='container'>
-                <div class='header'>
-                    <h1>📅 New Booking Request</h1>
-                </div>
-                <div class='content'>
-                    <p style='font-size: 18px;'>Hello Admin,</p>
-                    <p>A new hall booking has been submitted and requires your review.</p>
-                    
-                    <table>
-                        <tr>
-                            <td>Booking ID</td>
-                            <td><strong>$booking_id</strong></td>
-                        </tr>
-                        <tr>
-                            <td>Hall Name</td>
-                            <td><strong>$hall_name</strong></td>
-                        </tr>
-                        <tr>
-                            <td>Event Name</td>
-                            <td><strong>$event_name</strong></td>
-                        </tr>
-                        <tr>
-                            <td>Event Date</td>
-                            <td><strong>$date_fmt</strong></td>
-                        </tr>
-                        <tr>
-                            <td>Time Slot</td>
-                            <td><strong>$slot_label</strong></td>
-                        </tr>
-                        <tr>
-                            <td>Advance Amount</td>
-                            <td><strong>₹" . number_format($advance_amount, 2) . "</strong></td>
-                        </tr>
-                        <tr>
-                            <td>Current Status</td>
-                            <td><span class='status-badge'>⏳ PENDING</span></td>
-                        </tr>
-                    </table>
-                    
-                    <h3 style='margin-top: 30px;'>Customer Information</h3>
-                    <table>
-                        <tr>
-                            <td>Name</td>
-                            <td><strong>{$user['name']}</strong></td>
-                        </tr>
-                        <tr>
-                            <td>Email</td>
-                            <td><strong>{$user['email']}</strong></td>
-                        </tr>
-                        <tr>
-                            <td>Phone</td>
-                            <td><strong>{$user['phone']}</strong></td>
-                        </tr>
-                    </table>
-                    
-                    <div style='text-align: center;'>
-                        <a href='http://localhost/marriage-hall/admin/bookings.php?id=$booking_id' class='button'>
-                            🔍 Review Booking in Admin Panel
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </body>
-        </html>
-        ";
+        $mail->Body = '
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            color: #333; 
+            line-height: 1.6; 
+            margin: 0; 
+            padding: 0; 
+        }
+        .container { 
+            max-width: 600px; 
+            margin: 0 auto; 
+            padding: 20px; 
+        }
+        .header {
+            background: linear-gradient(135deg, #e91e63 0%, #ff4081 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        .header h1 { 
+            margin: 0; 
+        }
+        .header img { 
+            width: 80px; 
+        }
+        .content {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table tr td {
+            padding: 12px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        table tr td:first-child {
+            background: #f3f4f6;
+            font-weight: bold;
+            width: 40%;
+        }
+        table tr td:last-child {
+            background: white;
+        }
+        .status-badge {
+            background: #fbbf24;
+            color: #000;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #7c3aed;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        @media screen and (max-width: 600px) {
+            .header {
+                flex-direction: column;
+            }
+            table tr td:first-child {
+                width: 35%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="https://srilakshmiresidencymahal.saegroup.in/assets/images/wedding_illust.svg" alt="Booking">
+            <h1 style="margin-left: 45px;">New Booking Request</h1>
+        </div>
+        <div class="content">
+            <table>
+                <tr>
+                    <td>Booking ID</td>
+                    <td><strong>' . $booking_id . '</strong></td>
+                </tr>
+                <tr>
+                    <td>Hall Name</td>
+                    <td><strong>' . $hall_name . '</strong></td>
+                </tr>
+                <tr>
+                    <td>Event Name</td>
+                    <td><strong>' . $event_name . '</strong></td>
+                </tr>
+                <tr>
+                    <td>Event Date</td>
+                    <td><strong>' . $date_fmt . '</strong></td>
+                </tr>
+                <tr>
+                    <td>Time Slot</td>
+                    <td><strong>' . $slot_label . '</strong></td>
+                </tr>
+                <tr>
+                    <td>Advance Amount</td>
+                    <td><strong>₹' . number_format($advance_amount, 2) . '</strong></td>
+                </tr>
+                <tr>
+                    <td>Current Status</td>
+                    <td><span class="status-badge">⏳ PENDING</span></td>
+                </tr>
+            </table>
+            
+            <h3 style="margin-top: 30px;">Customer Information</h3>
+            <table>
+                <tr>
+                    <td>Name</td>
+                    <td><strong>' . $user['name'] . '</strong></td>
+                </tr>
+                <tr>
+                    <td>Email</td>
+                    <td><strong>' . $user['email'] . '</strong></td>
+                </tr>
+                <tr>
+                    <td>Phone</td>
+                    <td><strong>' . $user['phone'] . '</strong></td>
+                </tr>
+            </table>
+        </div>
+        <div class="footer">
+            <p>This is an automated notification. Please do not reply to this email.</p>
+            <p>&copy; ' . date('Y') . ' Sri Lakshmi Residency Mahal. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>
+';
         
         // Plain text alternative for non-HTML mail clients
         $mail->AltBody = "New Booking: $booking_id\n\n" .

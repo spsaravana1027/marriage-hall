@@ -78,13 +78,13 @@ try {
 <body>
     <?php include 'includes/navbar.php'; ?>
 
-    <header class="page-header">
+    <!-- <header class="page-header">
         <div class="container text-center">
             <div class="section-label"><i class="fas fa-images"></i> Visual Experience</div>
             <h1>Our Photo <span>Gallery</span></h1>
             <p>A glimpse into the stunning events and premium venues at Sri Lakshmi Residency & Mahal.</p>
         </div>
-    </header>
+    </header> -->
 
     <section class="section">
         <div class="container text-center" style="margin-bottom: 3rem;">

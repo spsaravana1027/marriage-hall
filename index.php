@@ -264,21 +264,21 @@ try {
 
                 <!-- Card 1: Mahal & Event Services -->
                 <div class="specialty-card reveal" style="flex-direction:column;align-items:flex-start;padding:2.5rem 2rem;min-height:320px;">
-                    <div class="s-icon" style="background:#ede9fe;color:#7c3aed;margin-bottom:1.25rem;">
+                    <div class="s-icon" style="background:#ede9fe;color:#e91e63;margin-bottom:1.25rem;">
                         <i class="fas fa-building-columns"></i>
                     </div>
                     <h4 style="margin-bottom:1rem;font-size:1.05rem;">Mahal &amp; Event Services</h4>
                     <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0.7rem;">
-                        <li style="color:var(--gray);font-size:0.88rem;"><i class="fas fa-check-circle" style="color:#7c3aed;margin-right:0.5rem;"></i>Weddings &amp; Receptions</li>
-                        <li style="color:var(--gray);font-size:0.88rem;"><i class="fas fa-check-circle" style="color:#7c3aed;margin-right:0.5rem;"></i>Engagements</li>
-                        <li style="color:var(--gray);font-size:0.88rem;"><i class="fas fa-check-circle" style="color:#7c3aed;margin-right:0.5rem;"></i>Birthday &amp; Family Functions</li>
-                        <li style="color:var(--gray);font-size:0.88rem;"><i class="fas fa-check-circle" style="color:#7c3aed;margin-right:0.5rem;"></i>Corporate Meetings</li>
+                        <li style="color:var(--gray);font-size:0.88rem;"><i class="fas fa-check-circle" style="color:#e91e63;margin-right:0.5rem;"></i>Weddings &amp; Receptions</li>
+                        <li style="color:var(--gray);font-size:0.88rem;"><i class="fas fa-check-circle" style="color:#e91e63;margin-right:0.5rem;"></i>Engagements</li>
+                        <li style="color:var(--gray);font-size:0.88rem;"><i class="fas fa-check-circle" style="color:#e91e63;margin-right:0.5rem;"></i>Birthday &amp; Family Functions</li>
+                        <li style="color:var(--gray);font-size:0.88rem;"><i class="fas fa-check-circle" style="color:#e91e63;margin-right:0.5rem;"></i>Corporate Meetings</li>
                     </ul>
                 </div>
 
                 <!-- Card 2: Decoration -->
                 <div class="specialty-card reveal" style="flex-direction:column;align-items:flex-start;padding:2.5rem 2rem;min-height:320px;">
-                    <div class="s-icon" style="background:#fce7f3;color:#ec4899;margin-bottom:1.25rem;">
+                    <div class="s-icon" style="background:#ede9fe;color:#e91e63;margin-bottom:1.25rem;">
                         <i class="fas fa-wand-magic-sparkles"></i>
                     </div>
                     <h4 style="margin-bottom:1rem;font-size:1.05rem;">Decoration</h4>
@@ -287,13 +287,13 @@ try {
 
                 <!-- Card 3: Food Arrangements -->
                 <div class="specialty-card reveal" style="flex-direction:column;align-items:flex-start;padding:2.5rem 2rem;min-height:320px;">
-                    <div class="s-icon" style="background:#fee2e2;color:#ef4444;margin-bottom:1.25rem;">
+                    <div class="s-icon" style="background:#ede9fe;color:#e91e63;margin-bottom:1.25rem;">
                         <i class="fas fa-utensils"></i>
                     </div>
                     <h4 style="margin-bottom:1rem;font-size:1.05rem;">Food Arrangements</h4>
                     <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0.7rem;">
-                        <li style="color:var(--gray);font-size:0.88rem;"><i class="fas fa-check-circle" style="color:#ef4444;margin-right:0.5rem;"></i>Breakfast, Lunch &amp; Dinner can be arranged on request</li>
-                        <li style="color:var(--gray);font-size:0.88rem;"><i class="fas fa-check-circle" style="color:#ef4444;margin-right:0.5rem;"></i>Guests may arrange their own catering</li>
+                        <li style="color:var(--gray);font-size:0.88rem;"><i class="fas fa-check-circle" style="color:#e91e63;margin-right:0.5rem;"></i>Breakfast, Lunch &amp; Dinner can be arranged on request</li>
+                        <li style="color:var(--gray);font-size:0.88rem;"><i class="fas fa-check-circle" style="color:#e91e63;margin-right:0.5rem;"></i>Guests may arrange their own catering</li>
                     </ul>
                 </div>
 
