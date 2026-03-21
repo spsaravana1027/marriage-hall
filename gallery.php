@@ -69,10 +69,13 @@ try {
             backdrop-filter: blur(10px);
         }
         #galleryModel.active { display: flex; }
-        .model-content { max-width: 90%; max-height: 80vh; position: relative; }
-        .model-img { width: 100%; height: auto; border-radius: var(--radius); box-shadow: 0 0 50px rgba(0,0,0,0.5); }
-        .model-caption { color: white; text-align: center; margin-top: 1rem; font-family: 'Poppins', sans-serif; }
-        .model-close { position: absolute; top: -40px; right: -40px; color: white; font-size: 2rem; cursor: pointer; }
+        .model-content { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+        .model-img { max-width: 90%; max-height: 90%; object-fit: contain; border-radius: var(--radius); box-shadow: 0 0 50px rgba(0,0,0,0.5); }
+        .model-close { position: absolute; top: 20px; right: 20px; color: white; font-size: 2rem; cursor: pointer; z-index: 10001; background: rgba(0,0,0,0.5); border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; }
+        @media (max-width: 768px) {
+            .model-img { max-width: 95%; max-height: 95%; }
+            .model-close { top: 15px; right: 15px; font-size: 1.5rem; width: 40px; height: 40px; }
+        }
     </style>
 </head>
 <body>
@@ -169,22 +172,9 @@ try {
 
     <!-- Gallery Model (Modal) -->
     <div id="galleryModel" onclick="closeGalleryModel()">
-        <div class="model-content" onclick="event.stopPropagation()">
+        <div class="model-content">
             <button class="model-close" onclick="closeGalleryModel()"><i class="fas fa-times"></i></button>
-            <div style="display:grid; grid-template-columns: 1.5fr 1fr; gap:0; background:white; border-radius:var(--radius-lg); overflow:hidden; box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);">
-                <div style="background:#000; display:flex; align-items:center; justify-content:center;">
-                    <img id="modelImg" src="" alt="Full Preview" style="max-width:100%; max-height:80vh; object-fit:contain;">
-                </div>
-                <div style="padding:2.5rem; display:flex; flex-direction:column; justify-content:center;">
-                    <div id="modelCategory" style="color:var(--primary); font-weight:800; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:1rem;"></div>
-                    
-                    <h2 id="modelTitleEn" style="margin-bottom:1.5rem; font-size:1.5rem;"></h2>
-                    
-                    <div style="height:1px; background:var(--border); margin-bottom:1.5rem;"></div>
-                    
-                    <div id="modelDescEn" style="color:var(--dark-2); margin-bottom:1rem; line-height:1.6;"></div>
-                </div>
-            </div>
+            <img id="modelImg" src="" alt="Full Preview" class="model-img">
         </div>
     </div>
 
@@ -197,8 +187,6 @@ try {
     <script>
         function openGalleryModel(src, titleEn, descEn) {
             document.getElementById('modelImg').src = src;
-            document.getElementById('modelTitleEn').innerText = titleEn;
-            document.getElementById('modelDescEn').innerText = descEn;
             
             document.getElementById('galleryModel').classList.add('active');
             document.body.style.overflow = 'hidden';

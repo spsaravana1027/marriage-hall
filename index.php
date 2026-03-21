@@ -18,7 +18,35 @@ try {
     // Fetch Banner
     $banner_stmt = $pdo->prepare("SELECT setting_value FROM settings WHERE setting_key = 'home_banner'");
     $banner_stmt->execute();
-    $home_banner = $banner_stmt->fetchColumn() ?: 'hall image1.webp';
+    $home_banner_raw = $banner_stmt->fetchColumn() ?: 'hall image1.webp';
+
+    $home_banner_items = [];
+    $decoded_banner = json_decode($home_banner_raw, true);
+    if (json_last_error() === JSON_ERROR_NONE && is_array($decoded_banner)) {
+        $home_banner_items = $decoded_banner;
+    } elseif (!empty($home_banner_raw)) {
+        $home_banner_items = [$home_banner_raw];
+    }
+    if (empty($home_banner_items)) {
+        $home_banner_items = ['hall image1.webp'];
+    }
+
+    $home_banner_paths = array_map(function ($item) {
+        if (strpos($item, 'hall image') !== false) {
+            return $item;
+        }
+        return 'assets/images/banners/' . $item;
+    }, $home_banner_items);
+
+    // Calculate slider animation timing
+    $image_count = count($home_banner_paths);
+    $display_time = 3; // seconds per image
+    $transition_time = 0.2; // seconds for quick slide transition (reduced for faster movement)
+    $total_duration = ($image_count * $display_time) + ($image_count * $transition_time);
+    $display_percentage = ($display_time / $total_duration) * 100;
+    $transition_percentage = ($transition_time / $total_duration) * 100;
+    $slide_percentage = 100 / $image_count;
+
     // Fetch Gallery Preview
     $gallery_stmt = $pdo->query("SELECT * FROM gallery ORDER BY created_at DESC LIMIT 8");
     $gallery_preview = $gallery_stmt->fetchAll();
@@ -35,20 +63,57 @@ try {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { padding-top: 0; }
-        .hero { min-height: 100vh; display: flex; align-items: center; }
-        .hero-content { position: relative; z-index: 2; padding: 8vh 5% 0; width: 100%; }
+        .hero { min-height: 100vh; display: flex; align-items: center; position: relative; overflow: hidden; }
+        .hero-content { position: relative; z-index: 3; padding: 8vh 5% 0; width: 100%; }
         .hero-tag { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.9); padding: 0.4rem 1rem; border-radius: var(--radius-full); font-size: 0.8rem; font-weight: 600; margin-bottom: 1.5rem; backdrop-filter: blur(4px); }
         .hero h1 { font-size: clamp(2.5rem, 5vw, 4.5rem); color: white; font-weight: 900; line-height: 1.05; letter-spacing: -0.03em; margin-bottom: 1.5rem; }
-        .hero h1 span { background: linear-gradient(120deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero h1 span { background: linear-gradient(120deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
         .hero p { font-size: 1.15rem; color: rgba(255,255,255,0.75); max-width: 520px; margin-bottom: 2.5rem; line-height: 1.7; animation: fadeInUp 0.8s ease backwards; animation-delay: 0.2s; }
         .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; }
         .hero-stats { display: flex; gap: 3rem; margin-top: 4rem; padding-top: 3rem; border-top: 1px solid rgba(255,255,255,0.1); flex-wrap: wrap; }
         .hero-stat-value { font-family: 'Poppins', sans-serif; font-size: 2rem; font-weight: 800; color: white; }
         .hero-stat-label { color: rgba(255,255,255,0.5); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; }
-        .hero-img-wrap { position: absolute; right: 0; top: 0; bottom: 0; width: 55%; display: flex; align-items: center; justify-content: flex-end; overflow: hidden; }
-        @media(max-width:992px) { 
+
+        /* Hero Background Slider */
+        .hero-slider { position: absolute; inset: 0; z-index: 1; }
+        .hero-slides { 
+            display: flex; 
+            width: <?php echo $image_count * 100; ?>%; 
+            animation: slideShow <?php echo $total_duration; ?>s infinite; 
+        }
+        .hero-slide { 
+            flex: 0 0 <?php echo $slide_percentage; ?>%; 
+            height: 100%; 
+        }
+        .hero-slide img { width: 100%; height: 100%; object-fit: cover; opacity: 0.35; }
+        @keyframes slideShow {
+            <?php
+            $keyframes = '';
+            $current_time = 0;
+            
+            for ($i = 0; $i < $image_count; $i++) {
+                $start_pos = $i * $slide_percentage;
+                
+                // Display period
+                $keyframes .= $current_time . '% { transform: translateX(-' . $start_pos . '%); }' . "\n            ";
+                $current_time += $display_percentage;
+                
+                // Transition period (if not the last image)
+                if ($i < $image_count - 1) {
+                    $next_pos = ($i + 1) * $slide_percentage;
+                    $keyframes .= $current_time . '% { transform: translateX(-' . $next_pos . '%); }' . "\n            ";
+                    $current_time += $transition_percentage;
+                }
+            }
+            
+            // Loop back to first image
+            $keyframes .= '100% { transform: translateX(0); }';
+            echo $keyframes;
+            ?>
+        }
+
+        @media(max-width:992px) {
             .hero { min-height: 80vh; padding-top: 80px; }
-            .hero-img-wrap { width: 100%; opacity: 0.15; } 
             .hero-content { padding: 4rem 1.5rem; text-align: center; flex-direction: column; }
             .hero-illust-area { order: -1; margin-bottom: 2rem; }
             .hero-illust-area img { max-width: 300px !important; }
@@ -62,8 +127,16 @@ try {
             .hero-stats { gap: 1.5rem; }
             .hero-stat-value { font-size: 1.5rem; }
         }
-        .hero-img-wrap::before { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, #0f172a 0%, transparent 50%); z-index: 1; }
-        @media(max-width:992px) { .hero-img-wrap::before { background: radial-gradient(circle at center, transparent, #0f172a 90%); } }
+
+        .banner-slider-wrapper { position: relative; width: 100%; overflow: hidden; margin-top: 2rem; margin-bottom: 3rem; }
+        .banner-slider { position: relative; width: 100%; height: 70vh; min-height: 400px; overflow: hidden; }
+        .banner-slide { position: absolute; inset: 0; opacity: 0; transition: opacity 0.7s ease; }
+        .banner-slide.active { opacity: 1; }
+        .banner-slide img { width: 100%; height: 100%; object-fit: cover; }
+        .slider-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 2.2rem; height: 2.2rem; background: rgba(0,0,0,0.5); border: 0; color: white; border-radius: 999px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 5; }
+        .slider-prev { left: 1rem; }
+        .slider-next { right: 1rem; }
+        @media (max-width: 768px) { .banner-slider { height: 50vh; min-height: 300px; } .slider-arrow { width: 1.8rem; height: 1.8rem; font-size: 0.8rem; left: 0.5rem; right: 0.5rem; } }
 
         /* Features */
         .features-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.5rem; }
@@ -98,11 +171,15 @@ try {
         <div class="hero-orb hero-orb-1"></div>
         <div class="hero-orb hero-orb-2"></div>
 
-        <div class="hero-img-wrap reveal" style="transition-duration: 2s;">
-            <?php 
-                $image_path = (strpos($home_banner, 'hall image') !== false) ? $home_banner : 'assets/images/banners/' . $home_banner;
-            ?>
-            <img src="<?php echo htmlspecialchars($image_path); ?>" alt="Beautiful Hall" style="width:100%;height:100%;object-fit:cover;opacity:0.35;">
+        <!-- Hero Background Slider -->
+        <div class="hero-slider">
+            <div class="hero-slides">
+                <?php foreach ($home_banner_paths as $banner_path): ?>
+                    <div class="hero-slide">
+                        <img src="<?php echo htmlspecialchars($banner_path); ?>" alt="Beautiful Hall">
+                    </div>
+                <?php endforeach; ?>
+            </div>
         </div>
 
         <div class="hero-content container reveal">
@@ -373,6 +450,44 @@ try {
                 if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
             });
         });
+
+        // Home banner slider controls
+        (function() {
+            const slides = document.querySelectorAll('.banner-slide');
+            if (!slides.length) return;
+
+            let currentSlide = 0;
+            const totalSlides = slides.length;
+            const nextBtn = document.getElementById('bannerNext');
+            const prevBtn = document.getElementById('bannerPrev');
+
+            const showSlide = (index) => {
+                slides.forEach((slide, i) => {
+                    slide.classList.toggle('active', i === index);
+                });
+            };
+
+            const goNext = () => {
+                currentSlide = (currentSlide + 1) % totalSlides;
+                showSlide(currentSlide);
+            };
+
+            const goPrev = () => {
+                currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+                showSlide(currentSlide);
+            };
+
+            if (nextBtn) nextBtn.addEventListener('click', goNext);
+            if (prevBtn) prevBtn.addEventListener('click', goPrev);
+
+            let autoSlide = setInterval(goNext, 5000);
+
+            const sliderSection = document.querySelector('.banner-slider');
+            if (sliderSection) {
+                sliderSection.addEventListener('mouseenter', () => clearInterval(autoSlide));
+                sliderSection.addEventListener('mouseleave', () => autoSlide = setInterval(goNext, 5000));
+            }
+        })();
     </script>
 </body>
 </html>

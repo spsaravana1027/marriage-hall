@@ -5,14 +5,14 @@ $current_page = basename($_SERVER['PHP_SELF']);
 <nav class="navbar" id="navbar">
     <!-- Animated Heart Logo -->
     <a href="index.php" class="navbar-brand" style="display:flex; align-items:center; gap:1rem; line-height:1;">
-        <div class="brand-logo-circle" style="width:60px; height:60px; border-radius:50%; overflow:hidden; border:2.5px solid var(--primary); display:flex; align-items:center; justify-content:center; background:white; flex-shrink:0; box-shadow:var(--shadow-md);">
+        <div class="brand-logo-circle" style="width:60px; height:60px; border-radius:50%; overflow:hidden; display:flex; align-items:center; justify-content:center; background:white; flex-shrink:0;">
             <?php if (!empty($brand_logo)): ?>
                 <img src="assets/images/<?php echo $brand_logo; ?>" style="width:100%; height:100%; object-fit:cover;">
             <?php else: ?>
                 <i class="fa-solid fa-heart" style="color:var(--primary); font-size:1.6rem;"></i>
             <?php endif; ?>
         </div>
-        <span style="font-weight:800; font-size:1.3rem; color:var(--dark); white-space:nowrap; letter-spacing:-0.02em;"><?php echo $brand_name; ?></span>
+        <span style="font-weight:800; font-size:1.3rem; color:#ad1457; white-space:nowrap; letter-spacing:-0.02em; font-family:'Cinzel', serif;"><?php echo $brand_name; ?></span>
     </a>
 
     <!-- Hamburger for mobile -->
