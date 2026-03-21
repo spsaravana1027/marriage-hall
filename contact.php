@@ -293,13 +293,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send'])) {
     <?php include 'includes/navbar.php'; ?>
 
     <!-- HERO -->
-    <div class="page-header" style="text-align:center;">
+    <!-- <div class="page-header" style="text-align:center;">
         <div class="container" style="position:relative;z-index:1;">
             <div class="section-label" style="display:inline-flex;margin-bottom:1rem;"><i class="fas fa-headset"></i> We're Here to Help</div>
             <h1 style="color:white;font-size:3rem;">Contact <span style="color:#a78bfa;">Us</span></h1>
             <p style="color:rgba(255,255,255,0.75);max-width:520px;margin:0 auto;font-size:1.05rem;">Experience premium comfort and grand celebrations in the heart of Srivilliputhur. We're here to help you plan your perfect event.</p>
         </div>
-    </div>
+    </div> -->
 
     <!-- CONTACT INFO + FORM -->
     <section class="section" style="background:white;">
@@ -315,10 +315,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send'])) {
                     <div style="display:flex;flex-direction:column;gap:1rem;margin-bottom:2rem;">
                         <?php
                         $contacts = [
-                            ['fas fa-phone',         '#7c3aed', '#ede9fe', 'Call Us Directly',    '+91 98765 43210',              'Mon-Sat, 9:00 AM - 6:00 PM',       'Available for instant enquiries'],
-                            ['fas fa-envelope',      '#ec4899', '#fce7f3', 'Email Support',        'srilakshmimahal@gmail.com',    'contact@srilakshmimahal.com',       'We reply within 24 hours'],
-                            ['fas fa-map-marker-alt', '#10b981', '#d1fae5', 'Our Location',         'Sri Lakshmi Residency & Mahal', 'Srivilliputhur, Tamil Nadu',        'In the heart of the city'],
-                            ['fab fa-whatsapp',      '#25d366', '#dcfce7', 'WhatsApp Booking',     'Easy chat-based booking',      'Fast & convenient',                 'Message us anytime'],
+                            ['fas fa-phone',         '#e91e63','#ede9fe','Call Us Directly',    '+91 98765 43210',              'Mon-Sat, 9:00 AM - 6:00 PM',       'Available for instant enquiries'],
+                            ['fas fa-envelope',      '#e91e63','#ede9fe','Email Support',        'srilakshmimahal@gmail.com',    'contact@srilakshmimahal.com',       'We reply within 24 hours'],
+                            ['fas fa-map-marker-alt','#e91e63','#ede9fe','Our Location',         'Sri Lakshmi Residency & Mahal','Srivilliputhur, Tamil Nadu',        'In the heart of the city'],
+                            ['fab fa-whatsapp',      '#e91e63','#ede9fe','WhatsApp Booking',     'Easy chat-based booking',      'Fast & convenient',                 'Message us anytime'],
                         ];
                         foreach ($contacts as [$icon, $col, $bg, $label, $line1, $line2, $line3]): ?>
                             <div class="contact-info-card">
@@ -339,14 +339,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send'])) {
                     <div>
                         <div style="font-weight:700;font-size:0.85rem;margin-bottom:0.75rem;color:var(--dark-2);">Follow Us</div>
                         <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
-                            <?php foreach (
-                                [
-                                    ['fab fa-facebook-f', '#1877f2', 'Facebook'],
-                                    ['fab fa-instagram', '#e1306c', 'Instagram'],
-                                    ['fab fa-whatsapp',  '#25d366', 'WhatsApp'],
-                                    ['fab fa-youtube',   '#ff0000', 'YouTube'],
-                                ] as [$ic, $col, $lbl]
-                            ): ?>
+                            <?php foreach ([
+                                ['fab fa-facebook-f','#e91e63','Facebook'],
+                                ['fab fa-instagram', '#e91e63','Instagram'],
+                                ['fab fa-whatsapp',  '#e91e63','WhatsApp'],
+                                ['fab fa-youtube',   '#e91e63','YouTube'],
+                            ] as [$ic,$col,$lbl]): ?>
                                 <a href="#" title="<?php echo $lbl; ?>" style="width:42px;height:42px;border-radius:50%;background:white;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:<?php echo $col; ?>;font-size:1rem;transition:var(--transition);"
                                     onmouseover="this.style.background='<?php echo $col; ?>';this.style.color='white';this.style.borderColor='<?php echo $col; ?>'"
                                     onmouseout="this.style.background='white';this.style.color='<?php echo $col; ?>';this.style.borderColor='var(--border)'">

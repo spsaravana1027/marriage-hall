@@ -14,16 +14,16 @@ if (isset($_GET['registered'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = trim($_POST['email'] ?? '');
+    $login_id = trim($_POST['login_id'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    if (empty($email) || empty($password)) {
+    if (empty($login_id) || empty($password)) {
         $error = 'Please fill in all fields.';
-    } elseif (loginUser($pdo, $email, $password)) {
-        header('Location: ' . (isAdmin() ? 'admin/dashboard.php' : 'index.php'));
-        exit();
+    } elseif (loginUser($pdo, $login_id, $password)) {
+        $login_success = true;
+        $redirect_url = isAdmin() ? 'admin/dashboard.php' : 'index.php';
     } else {
-        $error = 'Invalid email or password. Please try again.';
+        $error = 'Invalid email/phone or password. Please try again.';
     }
 }
 ?>
@@ -132,14 +132,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <form method="POST">
                 <div class="form-group">
-                    <label>Email Address</label>
+                    <label>Email or Phone Number</label>
                     <div class="input-icon-wrap">
-                        <i class="fas fa-envelope"></i>
-                        <input type="email" name="email" class="form-control" placeholder="your@email.com" required value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>">
+                        <i class="fas fa-user"></i>
+                        <input type="text" name="login_id" class="form-control" placeholder="Email Address or Phone Number" required value="<?php echo htmlspecialchars($_POST['login_id'] ?? ''); ?>">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Password</label>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+                        <label style="margin-bottom:0;">Password</label>
+                        <a href="forgot_password.php" style="font-size:0.85rem; color:var(--primary); font-weight:600; text-decoration:none;">Forgot Password?</a>
+                    </div>
                     <div class="input-icon-wrap" style="position:relative;">
                         <i class="fas fa-lock"></i>
                         <input type="password" name="password" id="password" class="form-control" placeholder="Enter your password" required>
@@ -156,12 +159,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
             <p style="text-align:center;margin-top:1.5rem;color:var(--gray);font-size:0.875rem;">
-                Don't have an account? <a href="register.php" style="color:var(--primary);font-weight:600;">Register here â†’</a>
+                Don't have an account? <a href="register.php" style="color:var(--primary);font-weight:600;">Register here -></a>
             </p>
         </div>
     </div>
 
     <script src="assets/js/validation.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         // Reveal trigger
         window.addEventListener('load', () => {
@@ -174,6 +178,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (p.type === 'password') { p.type = 'text'; i.classList.replace('fa-eye','fa-eye-slash'); }
             else { p.type = 'password'; i.classList.replace('fa-eye-slash','fa-eye'); }
         }
+
+        <?php if (isset($login_success) && $login_success): ?>
+        Swal.fire({
+            icon: 'success',
+            title: 'Login Successful',
+            text: 'Welcome back!',
+            timer: 1500,
+            showConfirmButton: false,
+            timerProgressBar: true,
+            backdrop: 'rgba(0,0,0,0.85)'
+        }).then(() => {
+            window.location.href = '<?php echo $redirect_url; ?>';
+        });
+        <?php endif; ?>
     </script>
 
 </body>
