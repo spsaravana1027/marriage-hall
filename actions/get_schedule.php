@@ -66,7 +66,7 @@ if (!empty($booked_dates)): ?>
                     <td><strong><?php echo date('d M Y (D)', strtotime($bk['event_date'])); ?></strong></td>
                     <td><?php echo htmlspecialchars($bk['event_name'] ?? '-'); ?></td>
                     <td>
-                        <span class="badge badge-<?php echo $bk['is_full_day'] ? 'primary' : 'info'; ?>">
+                        <span class="badge badge-<?php echo $bk['is_full_day'] ? 'primary' : 'info'; ?>" style="white-space:nowrap;">
                             <?php echo $bk['is_full_day'] ? 'Full Day (9:00am - 11:00pm)' : htmlspecialchars($bk['slot_name'] ?? '-'); ?>
                         </span>
                     </td>

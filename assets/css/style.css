@@ -1503,6 +1503,8 @@ select.form-control {
 .admin-layout {
     display: flex;
     min-height: 100vh;
+    max-width: 100vw;
+    overflow-x: hidden;
 }
 
 /* Premium Desktop Fixed Layout */
@@ -1681,6 +1683,7 @@ select.form-control {
     background: var(--bg);
     position: relative;
     z-index: 1;
+    min-width: 0;
 }
 
 .admin-topbar {
@@ -1699,6 +1702,25 @@ select.form-control {
 .admin-content {
     padding: 1.25rem;
     flex: 1;
+    min-width: 0;
+}
+
+/* Mobile Admin Nav Toggle */
+.admin-menu-toggle {
+    display: none;
+    background: transparent;
+    border: none;
+    font-size: 1.4rem;
+    color: var(--dark);
+    cursor: pointer;
+    margin-right: 1rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius);
+    transition: var(--transition);
+}
+.admin-menu-toggle:hover {
+    background: var(--primary-light);
+    color: var(--primary);
 }
 
 /* Admin Stat Cards */
@@ -1975,9 +1997,10 @@ select.form-control {
     .grid-2, .grid-3 { grid-template-columns: 1fr; gap: 3rem; }
     .halls-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
     
-    .admin-sidebar { transform: translateX(-100%); transition: 0.4s; z-index: 1100; }
-    .admin-sidebar.open { transform: translateX(0); }
+    .admin-sidebar { transform: translateX(-100%); transition: 0.4s; z-index: 1100; box-shadow: none; }
+    .admin-sidebar.open { transform: translateX(0); box-shadow: 4px 0 30px rgba(0,0,0,0.5); }
     .admin-main { margin-left: 0; }
+    .admin-menu-toggle { display: block; }
 }
 
 /* 2. MOBILE (Phones) */
