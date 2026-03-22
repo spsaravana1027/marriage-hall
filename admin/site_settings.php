@@ -11,7 +11,7 @@ $error = '';
 
 // Fetch current settings
 try {
-    $keys = ['brand_name', 'brand_logo', 'footer_phone', 'footer_email', 'social_facebook', 'social_instagram', 'social_youtube', 'social_whatsapp', 'google_maps_iframe'];
+    $keys = ['brand_name', 'brand_logo', 'footer_phone', 'footer_email', 'footer_address', 'social_facebook', 'social_instagram', 'social_youtube', 'social_whatsapp', 'google_maps_iframe'];
     $placeholders = str_repeat('?,', count($keys) - 1) . '?';
     $stmt = $pdo->prepare("SELECT setting_key, setting_value FROM settings WHERE setting_key IN ($placeholders)");
     $stmt->execute($keys);
@@ -21,6 +21,7 @@ try {
     $current_logo = $settings['brand_logo'] ?? '';
     $f_phone = $settings['footer_phone'] ?? '+91 98765 43210';
     $f_email = $settings['footer_email'] ?? 'slr@gmail.com';
+    $f_address = $settings['footer_address'] ?? '123, Main Road, Srivilliputhur, Tamil Nadu';
     $s_fb = $settings['social_facebook'] ?? '#';
     $s_ig = $settings['social_instagram'] ?? '#';
     $s_yt = $settings['social_youtube'] ?? '#';
@@ -40,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'brand_name' => 'Brand name',
         'footer_phone' => 'Phone number',
         'footer_email' => 'Email address',
+        'footer_address' => 'Street Address',
         'social_facebook' => 'Facebook link',
         'social_instagram' => 'Instagram link',
         'social_youtube' => 'YouTube link',
@@ -68,6 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if($key == 'brand_name') $current_name = $_POST[$key];
                 if($key == 'footer_phone') $f_phone = $_POST[$key];
                 if($key == 'footer_email') $f_email = $_POST[$key];
+                if($key == 'footer_address') $f_address = $_POST[$key];
                 if($key == 'social_facebook') $s_fb = $_POST[$key];
                 if($key == 'social_instagram') $s_ig = $_POST[$key];
                 if($key == 'social_youtube') $s_yt = $_POST[$key];
@@ -220,6 +223,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <div class="form-group">
                                 <label>Footer Email Address</label>
                                 <input type="email" name="footer_email" class="form-control" value="<?php echo htmlspecialchars($f_email); ?>" placeholder="info@example.com">
+                            </div>
+                            <div class="form-group">
+                                <label>Footer Street Address</label>
+                                <textarea name="footer_address" class="form-control" style="height:80px;" placeholder="123, Main Road, City, State"><?php echo htmlspecialchars($f_address); ?></textarea>
                             </div>
                         </div>
 

@@ -246,7 +246,7 @@ try {
     </section>
 
     <!-- WELCOME -->
-    <section class="section" style="background:white;">
+    <section class="section" style="background:white;padding:1.5rem 0;">
         <div class="container">
             <div class="text-center reveal" style="max-width:720px;margin:0 auto;">
                 <div class="section-label">WELCOME !</div>

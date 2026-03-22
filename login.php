@@ -36,42 +36,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="assets/css/style.css?v=rose2">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background: var(--bg); min-height: 100vh; display: flex; }
+        body { 
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('assets/images/halls/Banner-1.webp') no-repeat center center/cover; 
+            min-height: 100vh; 
+            display: flex; 
+        }
         .auth-left {
-            width: 45%;
-            background: var(--gradient-hero);
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            padding: 3rem;
+            display: none;
         }
         .auth-right {
-            width: 55%;
+            width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 2rem 1.5rem;
         }
         @media(max-width:1150px) {
-            .auth-left { display: none; }
             .auth-right { width: 100%; }
         }
         @media(max-width:480px) {
             .auth-right { padding: 1.5rem 1rem; }
-            .auth-form-wrap { max-width: 100%; }
+            .auth-form-wrap { max-width: 100%; padding: 2rem !important; }
             h1 { font-size: 1.5rem !important; }
         }
-        .auth-form-wrap { width: 100%; max-width: 420px; }
-        .auth-brand { font-family: 'Poppins',sans-serif; font-weight: 800; font-size: 1.8rem; color: white; margin-bottom: 2rem; }
-        .auth-brand i { color: var(--secondary); }
-        .auth-quote { color: rgba(255,255,255,0.7); font-size: 1rem; line-height: 1.7; margin-bottom: 2.5rem; }
-        .auth-feature { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
-        .auth-feature-icon { width: 40px; height: 40px; border-radius: 10px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; color: var(--secondary); flex-shrink: 0; }
-        .auth-feature p { color: rgba(255,255,255,0.8); font-size: 0.875rem; }
-        .auth-orb { position: absolute; border-radius: 50%; filter: blur(60px); }
+        .auth-form-wrap { 
+            width: 100%; 
+            max-width: 450px; 
+            background: rgba(255, 255, 255, 0.6); 
+            padding: 3rem; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+        }
         .divider { display: flex; align-items: center; gap: 1rem; margin: 1.5rem 0; color: var(--gray-light); font-size: 0.8rem; }
         .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
     </style>
@@ -116,12 +111,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- RIGHT FORM PANEL -->
     <div class="auth-right reveal delay-100">
         <div class="auth-form-wrap">
-            <a href="index.php" style="display:inline-flex;align-items:center;gap:0.5rem;color:var(--gray);font-size:0.85rem;margin-bottom:2rem;transition:var(--transition);" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--gray)'">
+            <a href="index.php" style="display:inline-flex;align-items:center;gap:0.5rem;color:#000;font-size:0.85rem;margin-bottom:2rem;transition:var(--transition);" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--gray)'">
                 <i class="fas fa-arrow-left"></i> Back to Home
             </a>
 
             <h1 style="font-size:2rem;margin-bottom:0.5rem;">Welcome Back!</h1>
-            <p style="color:var(--gray);margin-bottom:2rem;">Login to manage your hall bookings.</p>
+            <p style="color:#000;margin-bottom:2rem;">Login to manage your hall bookings.</p>
 
             <?php if ($error): ?>
                 <div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> <?php echo $error; ?></div>
@@ -130,13 +125,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="alert alert-success"><i class="fas fa-check-circle"></i> <?php echo $success; ?></div>
             <?php endif; ?>
 
-            <form method="POST">
+            <form method="POST" id="loginForm">
                 <div class="form-group">
                     <label>Email or Phone Number</label>
                     <div class="input-icon-wrap">
                         <i class="fas fa-user"></i>
-                        <input type="text" name="login_id" class="form-control" placeholder="Email Address or Phone Number" required value="<?php echo htmlspecialchars($_POST['login_id'] ?? ''); ?>">
+                        <input type="text" name="login_id" id="login_id" class="form-control" placeholder="Email Address or Phone Number" value="<?php echo htmlspecialchars($_POST['login_id'] ?? ''); ?>" oninput="validateLoginID()" onchange="validateLoginID()">
                     </div>
+                    <div id="loginError" style="font-size:0.75rem;margin-top:0.35rem;"></div>
                 </div>
                 <div class="form-group">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
@@ -145,9 +141,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                     <div class="input-icon-wrap" style="position:relative;">
                         <i class="fas fa-lock"></i>
-                        <input type="password" name="password" id="password" class="form-control" placeholder="Enter your password" required>
+                        <input type="password" name="password" id="password" class="form-control" placeholder="Enter your password" oninput="validatePassword()" onchange="validatePassword()">
                         <i class="fas fa-eye" id="togglePwd" onclick="togglePwd()" style="position:absolute;right:1rem;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--gray-light);left:auto;"></i>
                     </div>
+                    <div id="passwordError" style="font-size:0.75rem;margin-top:0.35rem;"></div>
                 </div>
 
 
@@ -158,18 +155,75 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
 
-            <p style="text-align:center;margin-top:1.5rem;color:var(--gray);font-size:0.875rem;">
+            <p style="text-align:center;margin-top:1.5rem;color:#000;font-size:0.875rem;">
                 Don't have an account? <a href="register.php" style="color:var(--primary);font-weight:600;">Register here -></a>
             </p>
         </div>
     </div>
 
-    <script src="assets/js/validation.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         // Reveal trigger
         window.addEventListener('load', () => {
             document.querySelectorAll('.reveal').forEach(el => el.classList.add('active'));
+        });
+
+        function validateLoginID() {
+            const el = document.getElementById('login_id');
+            const err = document.getElementById('loginError');
+            const val = el.value.trim();
+            if(!val) {
+                err.textContent = 'Email or Phone is required.';
+                err.style.color = '#ef4444';
+                el.style.borderColor = '#ef4444';
+                return false;
+            }
+            const isEmail = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/.test(val);
+            const isPhone = /^\d{10}$/.test(val);
+            if(!isEmail && !isPhone) {
+                err.textContent = 'Enter a valid 10-digit phone or email.';
+                err.style.color = '#ef4444';
+                el.style.borderColor = '#ef4444';
+                return false;
+            }
+            err.textContent = '';
+            el.style.borderColor = 'var(--success)';
+            return true;
+        }
+
+        function validatePassword() {
+            const el = document.getElementById('password');
+            const err = document.getElementById('passwordError');
+            const val = el.value.trim();
+            if(!val) {
+                err.textContent = 'Password is required.';
+                err.style.color = '#ef4444';
+                el.style.borderColor = '#ef4444';
+                return false;
+            }
+            if(val.length < 6) {
+                err.textContent = 'Password must be at least 6 characters.';
+                err.style.color = '#ef4444';
+                el.style.borderColor = '#ef4444';
+                return false;
+            }
+            if (!/[A-Z]/.test(val) || !/[a-z]/.test(val) || (val.match(/[0-9]/g) || []).length < 2 || !/[^A-Za-z0-9]/.test(val)) {
+                err.textContent = 'Must contain 1 uppercase, 1 lowercase, 2 numbers & 1 special char.';
+                err.style.color = '#ef4444';
+                el.style.borderColor = '#ef4444';
+                return false;
+            }
+            err.textContent = '';
+            el.style.borderColor = 'var(--success)';
+            return true;
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            const loginOK = validateLoginID();
+            const pwdOK = validatePassword();
+            if(!loginOK || !pwdOK) {
+                e.preventDefault();
+            }
         });
 
         function togglePwd() {

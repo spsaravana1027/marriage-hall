@@ -10,19 +10,23 @@
                             <i class="fas fa-building-columns" style="color:var(--primary); font-size:1.1rem;"></i>
                         <?php endif; ?>
                     </div>
-                    <span>SLR Mahal</span>
+                    <span><?php echo htmlspecialchars($brand_name); ?></span>
                 </div>
                 <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:0.6rem;">
-                    <li style="font-size:0.92rem; line-height:1.5; color:rgba(255,255,255,0.85);"><i class="fas fa-check" style="color:var(--primary); margin-right:0.6rem; font-size:0.8rem;"></i>Premium AC Rooms</li>
-                    <li style="font-size:0.92rem; line-height:1.5; color:rgba(255,255,255,0.85);"><i class="fas fa-check" style="color:var(--primary); margin-right:0.6rem; font-size:0.8rem;"></i>Fully AC Mahal</li>
+                    <li style="font-size:0.92rem; line-height:1.5; color:rgba(255,255,255,0.85);">Premium AC Rooms with Breakfast</li>
+                    <li style="font-size:0.92rem; line-height:1.5; color:rgba(255,255,255,0.85);">Fully AC Mahal for Grand Celebrations</li>
+                    <li style="font-size:0.92rem; line-height:1.5; color:rgba(255,255,255,0.85);">Trusted Hospitality & Event Services</li>
                 </ul>
             </div>
             <div>
                 <div style="font-weight:700; color:white; margin-bottom:1.25rem; font-size:0.95rem; font-family:'Poppins', sans-serif; text-transform:uppercase; letter-spacing:0.03em;">Quick Links</div>
                 <div class="footer-links" style="gap:0.6rem;">
                     <a href="index.php" style="font-size:0.92rem; color:rgba(255,255,255,0.8);">Home</a>
-                    <a href="halls.php" style="font-size:0.92rem; color:rgba(255,255,255,0.8);">Browse Halls</a>
-                    <a href="gallery.php" style="font-size:0.92rem; color:rgba(255,255,255,0.8);">Gallery</a>
+                    <a href="halls.php" style="font-size:0.92rem; color:rgba(255,255,255,0.8);">Services</a>
+                    <a href="contact.php" style="font-size:0.92rem; color:rgba(255,255,255,0.8);">Contact us</a>
+                    <?php if (isLoggedIn()): ?>
+                        <a href="my_bookings.php" style="font-size:0.92rem; color:rgba(255,255,255,0.8);">My Bookings</a>
+                    <?php endif; ?>
                 </div>
             </div>
             <div>
@@ -36,11 +40,15 @@
                         <i class="fas fa-envelope" style="color:var(--primary); width:18px; text-align:center; margin-top:3px;"></i>
                         <span><?php echo htmlspecialchars($footer_email); ?></span>
                     </div>
+                    <div style="display:flex; align-items:flex-start; gap:0.75rem;">
+                        <i class="fas fa-location-dot" style="color:var(--primary); width:18px; text-align:center; margin-top:3px;"></i>
+                        <span><?php echo htmlspecialchars($footer_address); ?></span>
+                    </div>
                 </div>
             </div>
             <div>
-                <div style="font-weight:700; color:white; margin-bottom:1.25rem; font-size:0.95rem; font-family:'Poppins', sans-serif; text-transform:uppercase; letter-spacing:0.03em;">Location</div>
-                <div style="border-radius:var(--radius); overflow:hidden; height:110px; border:1px solid rgba(255,255,255,0.15); box-shadow:0 4px 15px rgba(0,0,0,0.1);">
+                <div style="font-weight:700; color:white; margin-bottom:0.25rem; font-size:0.95rem; font-family:'Poppins', sans-serif; text-transform:uppercase; letter-spacing:0.03em;">Location</div>
+                <div style="border-radius:var(--radius); overflow:hidden; height:143px; border:1px solid rgba(255,255,255,0.15); box-shadow:0 4px 15px rgba(0,0,0,0.1);">
                     <?php if($google_maps_iframe): ?>
                         <iframe src="<?php echo htmlspecialchars($google_maps_iframe); ?>" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                     <?php else: ?>
