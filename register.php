@@ -54,34 +54,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
-            background: var(--bg);
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('assets/images/halls/Banner-2.webp') no-repeat center center/cover;
             min-height: 100vh;
             display: flex;
         }
 
         .auth-left {
-            width: 40%;
-            background: var(--gradient-hero);
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 3rem;
+            display: none;
         }
 
         .auth-right {
-            width: 60%;
+            width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 2.5rem 2rem;
+            padding: 1rem;
             overflow-y: auto;
         }
 
         .auth-form-wrap {
             width: 100%;
-            max-width: 500px;
+            max-width: 650px;
+            background: rgba(255, 255, 255, 0.6);
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
         }
 
         .form-row {
@@ -90,11 +87,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             gap: 1rem;
         }
 
-        @media(max-width:1150px) {
-            .auth-left {
-                display: none;
-            }
+        .form-group {
+            margin-bottom: 1rem !important;
+        }
 
+        .form-group label {
+            margin-bottom: 0.35rem !important;
+            font-size: 0.85rem !important;
+        }
+
+        .form-control {
+            padding: 0.7rem 1rem 0.7rem 2.8rem !important;
+            font-size: 0.9rem !important;
+            min-height: auto !important;
+        }
+
+        @media(max-width:1150px) {
             .auth-right {
                 width: 100%;
             }
@@ -106,11 +114,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             .auth-right {
-                padding: 1.5rem 1rem;
+                padding: 1rem;
             }
 
             .auth-form-wrap {
                 max-width: 100%;
+                padding: 1.5rem !important;
             }
 
             h1 {
@@ -176,12 +185,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- RIGHT -->
     <div class="auth-right reveal delay-100">
         <div class="auth-form-wrap">
-            <a href="index.php" style="display:inline-flex;align-items:center;gap:0.5rem;color:var(--gray);font-size:0.85rem;margin-bottom:2rem;">
+            <a href="index.php" style="display:inline-flex;align-items:center;gap:0.5rem;color:#000;font-size:0.85rem;margin-bottom:1.2rem;">
                 <i class="fas fa-arrow-left"></i> Back to Home
             </a>
 
-            <h1 style="font-size:1.9rem;margin-bottom:0.4rem;">Create Account</h1>
-            <p style="color:var(--gray);margin-bottom:1.75rem;">Register to book your perfect hall.</p>
+            <h1 style="font-size:1.75rem;margin-bottom:0.2rem;">Create Account</h1>
+            <p style="color:#000;margin-bottom:1.2rem;font-size:0.9rem;">Register to book your perfect hall.</p>
 
             <?php if ($error): ?>
                 <div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> <?php echo $error; ?></div>
@@ -235,27 +244,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <i class="fas fa-lock"></i>
                             <input type="password" name="confirm_password" id="cpwd" class="form-control" placeholder="Re-enter password" oninput="validatePassword()" onchange="validatePassword()">
                         </div>
+                        <div id="matchText" style="font-size:0.75rem;margin-top:0.35rem;"></div>
                     </div>
                 </div>
 
 
-                <div style="display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:1.5rem;padding:1rem;background:#f8fafc;border-radius:var(--radius);border:1px solid var(--border);">
+                <div style="display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:1.2rem;padding:0.85rem;background:#f8fafc;border-radius:var(--radius);border:1px solid var(--border);">
                     <input type="checkbox" id="agreeTerms" style="margin-top:3px;width:16px;height:16px;accent-color:var(--primary);flex-shrink:0;">
                     <label for="agreeTerms" style="font-size:0.85rem;color:var(--gray);cursor:pointer;">I agree to the <a href="#" style="color:var(--primary);">Terms of Service</a> and <a href="#" style="color:var(--primary);">Privacy Policy</a></label>
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-lg" style="width:100%;justify-content:center;">
+                <button type="submit" class="btn btn-primary btn-lg" style="width:100%;justify-content:center;padding:0.75rem 1.5rem;">
                     <i class="fas fa-user-plus"></i> Create Free Account
                 </button>
             </form>
 
-            <p style="text-align:center;margin-top:1.5rem;color:var(--gray);font-size:0.875rem;">
+            <p style="text-align:center;margin-top:1.2rem;color:#000;font-size:0.875rem;">
                 Already have an account? <a href="login.php" style="color:var(--primary);font-weight:600;">Login here -></a>
             </p>
         </div>
     </div>
 
-    <script src="assets/js/validation.js"></script>
     <script>
         // Reveal trigger
         window.addEventListener('load', () => {

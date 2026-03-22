@@ -539,15 +539,14 @@ else {
                 </div>
             </div>
         </div>
-        </div>
 
 <?php else: // ===== HALL GALLERY LISTING ===== ?>
     <!-- Page Header -->
     <div class="page-header">
         <div class="container reveal" style="position:relative;z-index:1;">
             <div class="section-label"><i class="fas fa-building"></i> Our Venues</div>
-            <h1 style="color:white;font-size:2.5rem;margin-bottom:0.5rem;">Browse All <span style="color:var(--secondary);">Halls & Venues</span></h1>
-            <p style="color:rgba(255,255,255,0.7);">Find your perfect venue from our collection of premium halls.</p>
+            <h1 style="color:black;font-size:2.5rem;margin-bottom:0.5rem;">Browse All <span style="color:var(--secondary);">Halls & Venues</span></h1>
+            <p style="color:black">Find your perfect venue from our collection of premium halls.</p>
         </div>
     </div>
 
@@ -598,8 +597,7 @@ else {
         </div> -->
 
         <!-- Hall Grid -->
-        <div class="container" style="padding-top:2rem;padding-bottom:4rem;display:flex;flex-direction:row;gap:2.5rem;">
-            <div>
+        <div class="container" style="padding-top:2.5rem;padding-bottom:4rem;display:flex;flex-direction:column;gap:2.5rem;">
                 <?php if (!empty($all_halls)): ?>
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:0.5rem;">
                         <p style="color:var(--gray);font-size:0.875rem;"><strong><?php echo count($all_halls); ?></strong> halls found</p>

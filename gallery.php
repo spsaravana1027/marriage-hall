@@ -38,7 +38,6 @@ try {
             }
         }
         .gallery-card {
-
             position: relative;
             height: 280px;
             border-radius: var(--radius-lg);
@@ -46,8 +45,13 @@ try {
             cursor: pointer;
             box-shadow: var(--shadow);
             transition: var(--transition);
+            border: 3px solid var(--primary-light);
         }
-        .gallery-card:hover { transform: scale(1.02) translateY(-5px); box-shadow: var(--shadow-lg); }
+        .gallery-card:hover { 
+            transform: scale(1.02) translateY(-5px); 
+            box-shadow: var(--shadow-lg); 
+            border-color: var(--primary);
+        }
         .gallery-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
         .gallery-card:hover img { transform: scale(1.1); }
         
@@ -64,17 +68,95 @@ try {
         /* Lightbox Model */
         #galleryModel {
             display: none; position: fixed; inset: 0;
-            background: rgba(0,0,0,0.9); z-index: 10000;
+            background: rgba(0,0,0,0.95); z-index: 10000;
             align-items: center; justify-content: center;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
+            padding: 2rem;
         }
         #galleryModel.active { display: flex; }
-        .model-content { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
-        .model-img { max-width: 90%; max-height: 90%; object-fit: contain; border-radius: var(--radius); box-shadow: 0 0 50px rgba(0,0,0,0.5); }
-        .model-close { position: absolute; top: 20px; right: 20px; color: white; font-size: 2rem; cursor: pointer; z-index: 10001; background: rgba(0,0,0,0.5); border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; }
+        .model-content { 
+            position: relative; 
+            max-width: 1000px; 
+            width: 100%; 
+            display: flex; 
+            flex-direction: column;
+            align-items: center; 
+            gap: 1.5rem;
+        }
+        .model-img-wrapper {
+            position: relative;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        .model-img { 
+            max-width: 100%; 
+            max-height: 70vh; 
+            object-fit: contain; 
+            border-radius: var(--radius-lg); 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            border: 4px solid rgba(255,255,255,0.1);
+        }
+        .model-info {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            border-radius: var(--radius-lg);
+            text-align: center;
+            color: white;
+            max-width: 800px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeInModal 0.4s ease-out;
+        }
+        @keyframes fadeInModal {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .model-title { 
+            font-size: 1.5rem; 
+            font-weight: 700; 
+            margin-bottom: 0.5rem;
+            color: var(--primary-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .model-desc { 
+            font-size: 1rem; 
+            line-height: 1.6; 
+            color: rgba(255,255,255,0.8);
+        }
+        .model-close { 
+            position: absolute; 
+            top: -20px; 
+            right: -20px; 
+            color: white; 
+            font-size: 1.25rem; 
+            cursor: pointer; 
+            background: var(--primary); 
+            backdrop-filter: blur(5px);
+            border-radius: 50%; 
+            width: 45px; 
+            height: 45px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            transition: var(--transition);
+            border: 3px solid rgba(255,255,255,0.8);
+            z-index: 10005;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3), 0 0 0 5px rgba(233,30,99,0.1);
+        }
+        .model-close:hover {
+            background: var(--dark);
+            transform: rotate(90deg) scale(1.1);
+            color: white;
+            border-color: white;
+        }
         @media (max-width: 768px) {
-            .model-img { max-width: 95%; max-height: 95%; }
-            .model-close { top: 15px; right: 15px; font-size: 1.5rem; width: 40px; height: 40px; }
+            #galleryModel { padding: 1.5rem; }
+            .model-img { max-height: 55vh; }
+            .model-title { font-size: 1.25rem; }
+            .model-desc { font-size: 0.9rem; }
+            .model-close { top: -15px; right: -15px; width: 40px; height: 40px; }
         }
     </style>
 </head>
@@ -119,9 +201,6 @@ try {
                                 <div class="gallery-title">
                                     <div style="font-weight:700;"><?php echo htmlspecialchars($img['title'] ?: 'Venue Photo'); ?></div>
                                 </div>
-                            </div>
-                            <div style="position:absolute; top:1rem; left:1rem; background:rgba(255,255,255,0.9); color:var(--primary); padding:0.2rem 0.6rem; border-radius:var(--radius-sm); font-size:0.65rem; font-weight:700; text-transform:uppercase; backdrop-filter:blur(5px);">
-                                <?php echo $img['category']; ?>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -172,9 +251,15 @@ try {
 
     <!-- Gallery Model (Modal) -->
     <div id="galleryModel" onclick="closeGalleryModel()">
-        <div class="model-content">
-            <button class="model-close" onclick="closeGalleryModel()"><i class="fas fa-times"></i></button>
-            <img id="modelImg" src="" alt="Full Preview" class="model-img">
+        <div class="model-content" onclick="event.stopPropagation()">
+            <div class="model-img-wrapper">
+                <button class="model-close" onclick="closeGalleryModel()"><i class="fas fa-times"></i></button>
+                <img id="modelImg" src="" alt="Full Preview" class="model-img">
+            </div>
+            <div class="model-info">
+                <div id="modelTitle" class="model-title"></div>
+                <div id="modelDesc" class="model-desc"></div>
+            </div>
         </div>
     </div>
 
@@ -187,6 +272,8 @@ try {
     <script>
         function openGalleryModel(src, titleEn, descEn) {
             document.getElementById('modelImg').src = src;
+            document.getElementById('modelTitle').textContent = titleEn || 'Venue Photo';
+            document.getElementById('modelDesc').textContent = descEn || 'No description available for this image.';
             
             document.getElementById('galleryModel').classList.add('active');
             document.body.style.overflow = 'hidden';

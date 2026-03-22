@@ -64,6 +64,32 @@ if (isset($_GET['action']) && isset($_GET['id'])) {
         try {
             $pdo->prepare("UPDATE bookings SET status = ? WHERE id = ?")->execute([$allowed[$action], $bk_id]);
             $msg = 'Booking status updated to ' . ucfirst($allowed[$action]) . '.';
+
+            // Send relevant status mail
+            $bk = $pdo->prepare("
+                SELECT b.*, h.name AS hall_name, u.name AS user_name, u.email AS user_email, s.name AS slot_name
+                FROM bookings b
+                JOIN halls h ON b.hall_id = h.id
+                JOIN users u ON b.user_id = u.id
+                LEFT JOIN slots s ON b.slot_id = s.id
+                WHERE b.id = ?
+            ");
+            $bk->execute([$bk_id]);
+            $booking = $bk->fetch();
+            
+            if ($booking) {
+                $sent = false;
+                if ($action === 'confirm') {
+                    $sent = sendBookingConfirmationMail($booking['user_email'], $booking['user_name'], $booking);
+                } elseif ($action === 'process') {
+                    $sent = sendBookingProcessingMail($booking['user_email'], $booking['user_name'], $booking);
+                } elseif ($action === 'cancel') {
+                    $sent = sendBookingCancelledMail($booking['user_email'], $booking['user_name'], $booking);
+                } elseif ($action === 'pending') {
+                    $sent = sendBookingPendingMail($booking['user_email'], $booking['user_name'], $booking);
+                }
+                $msg .= $sent ? ' Notification email sent to ' . htmlspecialchars($booking['user_email']) . '.' : ' (Email sending failed.)';
+            }
         } catch (Exception $e) { $error = 'Failed to update booking.'; }
     }
 }

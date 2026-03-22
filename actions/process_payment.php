@@ -24,10 +24,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $booking = $stmt->fetch();
 
         if ($booking) {
-            // Update payment status only (keep status as processing for admin confirmation)
-            $update = $pdo->prepare("UPDATE bookings SET payment_status = 'paid' WHERE booking_id = ?");
+            // Update payment status and auto-confirm the booking
+            $update = $pdo->prepare("UPDATE bookings SET payment_status = 'paid', status = 'confirmed' WHERE booking_id = ?");
             if ($update->execute([$booking_id])) {
-                echo json_encode(['success' => true, 'message' => 'Payment successful!']);
+                require_once '../includes/send_mail.php';
+                $bk = $pdo->prepare("
+                    SELECT b.*, h.name AS hall_name, u.name AS user_name, u.email AS user_email, s.name AS slot_name
+                    FROM bookings b
+                    JOIN halls h ON b.hall_id = h.id
+                    JOIN users u ON b.user_id = u.id
+                    LEFT JOIN slots s ON b.slot_id = s.id
+                    WHERE b.booking_id = ?
+                ");
+                $bk->execute([$booking_id]);
+                $bk_data = $bk->fetch();
+                if ($bk_data) {
+                    sendBookingConfirmationMail($bk_data['user_email'], $bk_data['user_name'], $bk_data);
+                }
+                echo json_encode(['success' => true, 'message' => 'Payment successful and booking confirmed!']);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Update failed']);
             }

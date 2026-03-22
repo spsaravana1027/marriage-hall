@@ -5,7 +5,8 @@ try {
     // Ensure rows exist for branding
     $defaults = [
         'brand_name' => 'Sri Lakshmi Residency & Mahal',
-        'brand_logo' => ''
+        'brand_logo' => '',
+        'footer_address' => '123, Main Road, Srivilliputhur, Tamil Nadu'
     ];
 
     foreach ($defaults as $key => $val) {

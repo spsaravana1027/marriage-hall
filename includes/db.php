@@ -52,6 +52,7 @@ $brand_name = 'Sri Lakshmi Residency & Mahal';
 $brand_logo = '';
 $footer_phone = '+91 98765 43210';
 $footer_email = 'slr@gmail.com';
+$footer_address = '123, Main Road, Srivilliputhur, Tamil Nadu';
 $social_facebook = '#';
 $social_instagram = '#';
 $social_youtube = '#';
@@ -60,7 +61,7 @@ $google_maps_iframe = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d393
 
 if (isset($pdo)) {
     try {
-        $keys = ['brand_name', 'brand_logo', 'footer_phone', 'footer_email', 'social_facebook', 'social_instagram', 'social_youtube', 'social_whatsapp', 'google_maps_iframe'];
+        $keys = ['brand_name', 'brand_logo', 'footer_phone', 'footer_email', 'footer_address', 'social_facebook', 'social_instagram', 'social_youtube', 'social_whatsapp', 'google_maps_iframe'];
         $placeholders = str_repeat('?,', count($keys) - 1) . '?';
         $brand_stmt = $pdo->prepare("SELECT setting_key, setting_value FROM settings WHERE setting_key IN ($placeholders)");
         $brand_stmt->execute($keys);
@@ -70,6 +71,7 @@ if (isset($pdo)) {
         $brand_logo = $site_settings['brand_logo'] ?? $brand_logo;
         $footer_phone = $site_settings['footer_phone'] ?? $footer_phone;
         $footer_email = $site_settings['footer_email'] ?? $footer_email;
+        $footer_address = $site_settings['footer_address'] ?? $footer_address;
         $social_facebook = $site_settings['social_facebook'] ?? $social_facebook;
         $social_instagram = $site_settings['social_instagram'] ?? $social_instagram;
         $social_youtube = $site_settings['social_youtube'] ?? $social_youtube;

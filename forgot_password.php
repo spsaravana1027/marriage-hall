@@ -69,8 +69,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label>Email Address</label>
                 <div class="input-icon-wrap">
                     <i class="fas fa-envelope"></i>
-                    <input type="email" name="email" class="form-control" placeholder="your@email.com" required>
+                    <input type="email" name="email" id="email" class="form-control" placeholder="your@email.com" oninput="validateEmail()" onchange="validateEmail()">
                 </div>
+                <div id="emailError" style="font-size:0.75rem;margin-top:0.35rem;"></div>
             </div>
 
             <button type="submit" id="submitBtn" class="btn btn-primary btn-lg" style="width:100%;justify-content:center;margin-top:0.5rem;">
@@ -81,7 +82,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        document.getElementById('forgotForm').addEventListener('submit', function() {
+        function validateEmail() {
+            const el = document.getElementById('email');
+            const err = document.getElementById('emailError');
+            const val = el.value.trim();
+            const regex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
+            if (!val) {
+                err.textContent = 'Email is required.';
+                err.style.color = '#ef4444';
+                el.style.borderColor = '#ef4444';
+                return false;
+            }
+            if (!regex.test(val)) {
+                err.textContent = 'Please enter a valid email address.';
+                err.style.color = '#ef4444';
+                el.style.borderColor = '#ef4444';
+                return false;
+            }
+            err.textContent = '';
+            el.style.borderColor = 'var(--success)';
+            return true;
+        }
+
+        document.getElementById('forgotForm').addEventListener('submit', function(e) {
+            if (!validateEmail()) {
+                e.preventDefault();
+                return false;
+            }
+
             const btn = document.getElementById('submitBtn');
             const icon = document.getElementById('btnIcon');
             const text = document.getElementById('btnText');

@@ -77,10 +77,11 @@ require_once 'includes/auth_functions.php';
                         ['fas fa-parking',    '#e91e63','#ede9fe','Spacious Parking Facility',    'Ample parking for guests and visitors'],
                         ['fas fa-wifi',       '#e91e63','#ede9fe','Free Wi-Fi',                   'High-speed internet throughout the property'],
                         ['fas fa-tint',       '#e91e63','#ede9fe','24/7 Water Supply',            'Uninterrupted water supply round the clock'],
+                        ['fas fa-bowl-food',  '#e91e63','#ede9fe','3 Time Free Meals',            'Delicious breakfast, lunch, and dinner included'],
                         ['fas fa-cookie-bite','#e91e63','#ede9fe','Snacks on Request',            'Fresh snacks available on request anytime'],
                     ];
 
-                    foreach ($milestones as [$icon,$title,$desc]): ?>
+                    foreach ($milestones as [$icon,$col,$baccol,$title,$desc]): ?>
                         <div style="background:#f8fafc;border-radius:var(--radius-lg);padding:1.5rem;border:1px solid var(--border);transition:var(--transition);" onmouseover="this.style.borderColor='var(--primary)';this.style.background='white';this.style.boxShadow='var(--shadow-md)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='#f8fafc';this.style.boxShadow='none'">
                             <div style="width:46px;height:46px;border-radius:var(--radius);background:var(--primary-light);display:flex;align-items:center;justify-content:center;margin-bottom:0.75rem;">
                                 <i class="<?php echo $icon; ?>" style="color:var(--primary);font-size:1.1rem;"></i>
@@ -109,7 +110,7 @@ require_once 'includes/auth_functions.php';
                     ['fas fa-handshake','#e91e63','#ede9fe','Customer First','Friendly service and warm hospitality are at the core of everything we do.'],
                     ['fas fa-shield-alt','#e91e63','#ede9fe','Aesthetically Built','Modern architecture with premium interiors designed for elegance and convenience.'],
                 ];
-                foreach ($values as [$icon,$title,$desc]): ?>
+                foreach ($values as [$icon,$col,$baccol,$title,$desc]): ?>
                     <div class="value-card">
                         <div style="width:56px;height:56px;border-radius:var(--radius);background:var(--primary-light);display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;">
                             <i class="<?php echo $icon; ?>" style="color:var(--primary);font-size:1.3rem;"></i>
