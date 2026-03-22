@@ -203,7 +203,7 @@ try {
             <!-- Quick Stats -->
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:1.5rem;">
                 <?php foreach ([
-                    ['Total', $stats['total'], '#7c3aed', '#ede9fe', 'fas fa-list'],
+                    ['Total', $stats['total'], '#e91e63', '#fce7f3', 'fas fa-list'],
                     ['Pending', $stats['pending'] ?? 0, '#f59e0b', '#fef3c7', 'fas fa-hourglass-half'],
                     ['Processing', $stats['processing'] ?? 0, '#3b82f6', '#dbeafe', 'fas fa-sync fa-spin'],
                     ['Confirmed', $stats['confirmed'] ?? 0, '#10b981', '#d1fae5', 'fas fa-check-circle'],
@@ -306,7 +306,7 @@ try {
                                         <br><span style="font-size:0.7rem;color:var(--gray);"><?php echo date('D', strtotime($b['event_date'])); ?></span>
                                     </td>
                                     <td>
-                                        <span class="badge badge-<?php echo $b['is_full_day'] ? 'primary' : 'info'; ?>" style="font-size:0.68rem;">
+                                        <span class="badge badge-<?php echo $b['is_full_day'] ? 'primary' : 'info'; ?>" style="font-size:0.68rem; white-space:nowrap;">
                                             <?php if ($b['is_full_day']): ?>
                                                 Full Day (9:00am - 11:00pm)
                                             <?php elseif ($b['slot_name']): ?>

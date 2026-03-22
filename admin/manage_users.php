@@ -112,7 +112,7 @@ $user_count  = $total_users - $admin_count;
             <!-- Stats -->
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:1.5rem;">
                 <div class="admin-stat-card">
-                    <div class="stat-icon" style="background:#ede9fe;color:#7c3aed;width:44px;height:44px;font-size:1.1rem;"><i class="fas fa-users"></i></div>
+                    <div class="stat-icon" style="background:#fce7f3;color:#e91e63;width:44px;height:44px;font-size:1.1rem;"><i class="fas fa-users"></i></div>
                     <div>
                         <div style="font-size:0.7rem;color:var(--gray);text-transform:uppercase;">Total Users</div>
                         <div style="font-size:1.5rem;font-weight:800;font-family:'Poppins',sans-serif;"><?php echo $total_users; ?></div>

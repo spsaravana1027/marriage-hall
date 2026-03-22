@@ -508,7 +508,7 @@ else {
                                             }
                                             $icon = stripos($slot['name'], 'morning') !== false ? '[Morning]' : '[Evening]';
                                         ?>
-                                        <option value="slot_<?php echo $slot['id']; ?>" data-fullday="0" data-slotid="<?php echo $slot['id']; ?>">
+                                        <option value="slot_<?php echo $slot['id']; ?>" data-fullday="0" data-slotid="<?php echo $slot['id']; ?>" data-slotname="<?php echo htmlspecialchars($slot['name']); ?>">
                                             <?php echo $icon . ' ' . htmlspecialchars($slot['name']) . $time_label; ?>
                                         </option>
                                         <?php endforeach; ?>
@@ -522,6 +522,32 @@ else {
                                     <div class="price-row total">
                                         <span>Total Hall Rate</span>
                                         <span id="hallRate">Rs. <?php echo number_format($current_hall['price_per_day']); ?></span>
+                                    </div>
+
+                                    <!-- Advance Amount & Payment Info (hidden until slot selected) -->
+                                    <div id="advancePaymentSection" style="display:none; margin-top:1rem; padding:1.25rem; background:linear-gradient(135deg, #fce7f3 0%, #fff1f2 100%); border-radius:0.75rem; border:1px solid #fbcfe8; animation:fadeInUp 0.3s ease;">
+                                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+                                            <span style="font-weight:700; font-size:0.85rem; color:var(--dark);"><i class="fas fa-receipt" style="color:var(--primary); margin-right:0.4rem;"></i>Advance Amount</span>
+                                            <span id="advanceAmountDisplay" style="font-weight:800; font-size:1.1rem; color:var(--primary); font-family:'Poppins',sans-serif;">Rs. 0</span>
+                                        </div>
+                                        <div style="font-size:0.75rem; color:var(--gray); margin-bottom:0.75rem; line-height:1.5;">
+                                            <i class="fas fa-info-circle" style="color:var(--primary); margin-right:0.3rem;"></i>
+                                            This advance amount is required to confirm your booking. Remaining balance can be paid at the venue.
+                                        </div>
+                                        <div style="border-top:1px dashed #e5a0b7; padding-top:0.75rem;">
+                                            <div style="font-weight:700; font-size:0.78rem; color:var(--dark); margin-bottom:0.5rem;"><i class="fas fa-credit-card" style="color:var(--primary); margin-right:0.3rem;"></i>Payment Options</div>
+                                            <div style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+                                                <span style="display:inline-flex; align-items:center; gap:0.3rem; padding:0.35rem 0.75rem; background:white; border-radius:2rem; font-size:0.72rem; font-weight:600; color:var(--dark-2); border:1px solid #e2e8f0;">
+                                                    <i class="fas fa-mobile-alt" style="color:#6366f1;"></i> UPI / GPay
+                                                </span>
+                                                <span style="display:inline-flex; align-items:center; gap:0.3rem; padding:0.35rem 0.75rem; background:white; border-radius:2rem; font-size:0.72rem; font-weight:600; color:var(--dark-2); border:1px solid #e2e8f0;">
+                                                    <i class="fas fa-university" style="color:#0891b2;"></i> Bank Transfer
+                                                </span>
+                                                <span style="display:inline-flex; align-items:center; gap:0.3rem; padding:0.35rem 0.75rem; background:white; border-radius:2rem; font-size:0.72rem; font-weight:600; color:var(--dark-2); border:1px solid #e2e8f0;">
+                                                    <i class="fas fa-money-bill-wave" style="color:#16a34a;"></i> Cash
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <input type="hidden" name="advance_amount" id="advance_amount_input" value="0">
@@ -694,6 +720,7 @@ else {
         </div>
         <?php endif; ?>
     </div>
+    </div>
 <?php endif; ?>
 
         <?php include 'includes/footer.php'; ?>
@@ -725,20 +752,36 @@ else {
             <?php if ($hall_id > 0): ?>
                 // Slot selection logic
                 const hallPricePerDay = <?php echo (float)$current_hall['price_per_day']; ?>;
-                const hallAdvanceFull = <?php echo (float)($current_hall['advance_amount'] ?? ($current_hall['price_per_day'] * 0.3)); ?>;
-                const slotAdvance = hallAdvanceFull * 0.5;
+                const morningSlotPrice = <?php echo (float)($current_hall['morning_slot_price'] ?? 0); ?>;
+                const eveningSlotPrice = <?php echo (float)($current_hall['evening_slot_price'] ?? 0); ?>;
+                const hallAdvanceAmount = <?php echo (float)($current_hall['advance_amount'] ?? 0); ?>;
 
                 function handleSlotChange(select) {
                     const opt = select.options[select.selectedIndex];
                     const isFullDay = opt.dataset.fullday === '1';
                     const slotId = opt.dataset.slotid || '';
+                    const slotName = (opt.dataset.slotname || '').toLowerCase();
 
                     document.getElementById('is_full_day').value = isFullDay ? '1' : '0';
                     document.getElementById('slot_id_input').value = slotId;
 
-            const slotPrice = isFullDay ? hallPricePerDay : hallPricePerDay * 0.55;
-            document.getElementById('hallRate').textContent = 'Rs. ' + slotPrice.toLocaleString('en-IN', {maximumFractionDigits:0});
-        }
+                    // Determine price based on slot type
+                    let slotPrice = hallPricePerDay;
+                    if (!isFullDay) {
+                        if (slotName.includes('morning')) {
+                            slotPrice = morningSlotPrice > 0 ? morningSlotPrice : hallPricePerDay * 0.55;
+                        } else {
+                            slotPrice = eveningSlotPrice > 0 ? eveningSlotPrice : hallPricePerDay * 0.55;
+                        }
+                    }
+                    document.getElementById('hallRate').textContent = 'Rs. ' + slotPrice.toLocaleString('en-IN', {maximumFractionDigits:0});
+
+                    // Show advance amount & payment section
+                    const advAmount = hallAdvanceAmount > 0 ? hallAdvanceAmount : (hallPricePerDay * 0.3);
+                    document.getElementById('advance_amount_input').value = advAmount;
+                    document.getElementById('advanceAmountDisplay').textContent = 'Rs. ' + advAmount.toLocaleString('en-IN', {maximumFractionDigits:0});
+                    document.getElementById('advancePaymentSection').style.display = 'block';
+                }
 
                 document.getElementById('bookingForm').addEventListener('submit', function(e) {
                     const select = document.getElementById('bookingTypeSelect');

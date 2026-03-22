@@ -4,8 +4,15 @@ $current_page = basename($_SERVER['PHP_SELF']);
 ?>
 <aside class="admin-sidebar" id="adminSidebar">
     <div class="sidebar-logo" style="display:flex; align-items:center; gap:0.8rem; padding:1.5rem 1.25rem;">
+        <div style="width:40px; height:40px; border-radius:50%; overflow:hidden; display:flex; align-items:center; justify-content:center; background:white; flex-shrink:0; box-shadow:0 2px 5px rgba(0,0,0,0.2);">
+            <?php if (!empty($brand_logo)): ?>
+                <img src="../assets/images/<?php echo htmlspecialchars($brand_logo); ?>" style="width:100%; height:100%; object-fit:cover;">
+            <?php else: ?>
+                <i class="fa-solid fa-heart" style="color:var(--primary); font-size:1.2rem;"></i>
+            <?php endif; ?>
+        </div>
         <div style="font-weight:800; font-size:1.25rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:200px; line-height:1.2; color: white;">
-            <?php echo $brand_name; ?>
+            <?php echo htmlspecialchars($brand_name); ?>
         </div>
     </div>
 
@@ -31,6 +38,9 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 </a>
                 <a href="contact_inquiries.php" class="sidebar-link <?php echo $current_page === 'contact_inquiries.php' ? 'active' : ''; ?>" style="font-size:0.85rem;">
                     <i class="fas fa-angle-right" style="font-size:0.7rem; opacity:0.5; margin-right:0.4rem;"></i> <i class="fas fa-envelope" style="font-size:0.9rem;"></i> Contact Inquiries
+                </a>
+                <a href="reports.php" class="sidebar-link <?php echo $current_page === 'reports.php' ? 'active' : ''; ?>" style="font-size:0.85rem;">
+                    <i class="fas fa-angle-right" style="font-size:0.7rem; opacity:0.5; margin-right:0.4rem;"></i> <i class="fas fa-chart-line" style="font-size:0.9rem;"></i> Reports
                 </a>
             </div>
         </div>
@@ -88,5 +98,54 @@ $current_page = basename($_SERVER['PHP_SELF']);
     </div>
 </aside>
 <?php include '../includes/alerts.php'; ?>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const topbar = document.querySelector('.admin-topbar');
+    if (topbar && !document.querySelector('.admin-menu-toggle')) {
+        const firstDiv = topbar.querySelector('div');
+        if (firstDiv) {
+            firstDiv.style.display = 'flex';
+            firstDiv.style.alignItems = 'center';
+            
+            const btn = document.createElement('button');
+            btn.className = 'admin-menu-toggle';
+            btn.innerHTML = '<i class="fas fa-bars"></i>';
+            btn.style.cssText = 'background:transparent; border:none; font-size:1.4rem; color:var(--dark); cursor:pointer; margin-right:1rem; padding:0.1rem 0.5rem; transition:0.3s; outline:none;';
+            
+            const toggleVisibility = () => {
+                btn.style.display = window.innerWidth <= 1150 ? 'block' : 'none';
+            };
+            window.addEventListener('resize', toggleVisibility);
+            toggleVisibility();
+
+            firstDiv.insertBefore(btn, firstDiv.firstChild);
+            
+            const sidebar = document.getElementById('adminSidebar');
+            
+            // Create overlay
+            const overlay = document.createElement('div');
+            overlay.className = 'sidebar-overlay';
+            Object.assign(overlay.style, {
+                position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', 
+                zIndex: 1050, display: 'none', opacity: 0, transition: '0.3s'
+            });
+            document.body.appendChild(overlay);
+
+            btn.addEventListener('click', function() {
+                sidebar.classList.add('open');
+                overlay.style.display = 'block';
+                setTimeout(() => overlay.style.opacity = 1, 10);
+            });
+            
+            overlay.addEventListener('click', function() {
+                sidebar.classList.remove('open');
+                overlay.style.opacity = 0;
+                setTimeout(() => overlay.style.display = 'none', 300);
+            });
+        }
+    }
+});
+</script>
 
 

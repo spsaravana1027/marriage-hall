@@ -16,6 +16,8 @@ try {
         'processing'=> $pdo->query("SELECT COUNT(*) FROM bookings WHERE status='processing'")->fetchColumn(),
         'confirmed'=> $pdo->query("SELECT COUNT(*) FROM bookings WHERE status='confirmed'")->fetchColumn(),
         'revenue'  => $pdo->query("SELECT COALESCE(SUM(advance_amount),0) FROM bookings WHERE status='confirmed'")->fetchColumn(),
+        'monthly_revenue'=> $pdo->query("SELECT COALESCE(SUM(advance_amount),0) FROM bookings WHERE status='confirmed' AND YEAR(created_at) = YEAR(CURDATE()) AND MONTH(created_at) = MONTH(CURDATE())")->fetchColumn(),
+        'weekly_revenue'=> $pdo->query("SELECT COALESCE(SUM(advance_amount),0) FROM bookings WHERE status='confirmed' AND YEARWEEK(created_at, 1) = YEARWEEK(CURDATE(), 1)")->fetchColumn(),
     ];
 
     // Recent bookings
@@ -48,7 +50,7 @@ try {
     ")->fetchAll();
 
 } catch (Exception $e) {
-    $stats = ['halls'=>0,'bookings'=>0,'users'=>0,'pending'=>0,'confirmed'=>0,'revenue'=>0];
+    $stats = ['halls'=>0,'bookings'=>0,'users'=>0,'pending'=>0,'confirmed'=>0,'revenue'=>0,'monthly_revenue'=>0,'weekly_revenue'=>0];
     $recent = []; $monthly = []; $hall_util = [];
 }
 ?>
@@ -116,13 +118,15 @@ try {
             <div class="stagger-children" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.25rem;margin-bottom:1.5rem;">
                 <?php
                 $stat_items = [
-                    ['label'=>'Total Halls',  'val'=>$stats['halls'],    'icon'=>'fas fa-building', 'bg'=>'#ede9fe','color'=>'#7c3aed','sub'=>'Active venues'],
-                    ['label'=>'Total Bookings','val'=>$stats['bookings'],'icon'=>'fas fa-calendar-check','bg'=>'#ede9fe','color'=>'#7c3aed','sub'=>'All time'],
-                    ['label'=>'Active Users', 'val'=>$stats['users'],    'icon'=>'fas fa-users',  'bg'=>'#ede9fe','color'=>'#7c3aed','sub'=>'Registered'],
-                    ['label'=>'Pending',       'val'=>$stats['pending'], 'icon'=>'fas fa-hourglass-half','bg'=>'#ede9fe','color'=>'#7c3aed','sub'=>'Awaiting review'],
-                    ['label'=>'Processing',    'val'=>$stats['processing'], 'icon'=>'fas fa-sync','bg'=>'#ede9fe','color'=>'#7c3aed','sub'=>'In progress'],
-                    ['label'=>'Confirmed',     'val'=>$stats['confirmed'],'icon'=>'fas fa-check-circle','bg'=>'#ede9fe','color'=>'#7c3aed','sub'=>'This month'],
-                    ['label'=>'Total Revenue', 'val'=>'<span style="white-space:nowrap;"><span style="margin-right:0.25rem;">Rs.</span>'.number_format($stats['revenue']).'</span>', 'icon'=>'fas fa-money-bill-wave','bg'=>'#ede9fe','color'=>'#7c3aed','sub'=>'Confirmed bookings'],
+                    ['label'=>'Total Halls',  'val'=>$stats['halls'],    'icon'=>'fas fa-building', 'bg'=>'#fce7f3','color'=>'#e91e63','sub'=>'Active venues'],
+                    ['label'=>'Total Bookings','val'=>$stats['bookings'],'icon'=>'fas fa-calendar-check','bg'=>'#fce7f3','color'=>'#e91e63','sub'=>'All time'],
+                    ['label'=>'Active Users', 'val'=>$stats['users'],    'icon'=>'fas fa-users',  'bg'=>'#fce7f3','color'=>'#e91e63','sub'=>'Registered'],
+                    ['label'=>'Pending',       'val'=>$stats['pending'], 'icon'=>'fas fa-hourglass-half','bg'=>'#fce7f3','color'=>'#e91e63','sub'=>'Awaiting review'],
+                    ['label'=>'Processing',    'val'=>$stats['processing'], 'icon'=>'fas fa-sync','bg'=>'#fce7f3','color'=>'#e91e63','sub'=>'In progress'],
+                    ['label'=>'Confirmed',     'val'=>$stats['confirmed'],'icon'=>'fas fa-check-circle','bg'=>'#fce7f3','color'=>'#e91e63','sub'=>'This month'],
+                    ['label'=>'Monthly Revenue', 'val'=>'<span style="white-space:nowrap;"><span style="margin-right:0.25rem;">Rs.</span>'.number_format($stats['monthly_revenue']).'</span>', 'icon'=>'fas fa-calendar-alt','bg'=>'#fce7f3','color'=>'#e91e63','sub'=>'This month'],
+                    ['label'=>'Weekly Revenue', 'val'=>'<span style="white-space:nowrap;"><span style="margin-right:0.25rem;">Rs.</span>'.number_format($stats['weekly_revenue']).'</span>', 'icon'=>'fas fa-calendar-week','bg'=>'#fce7f3','color'=>'#e91e63','sub'=>'This week'],
+                    ['label'=>'Total Revenue', 'val'=>'<span style="white-space:nowrap;"><span style="margin-right:0.25rem;">Rs.</span>'.number_format($stats['revenue']).'</span>', 'icon'=>'fas fa-money-bill-wave','bg'=>'#fce7f3','color'=>'#e91e63','sub'=>'Confirmed bookings'],
                 ];
                 foreach ($stat_items as $item): ?>
                     <div class="admin-stat-card glass-card reveal">
