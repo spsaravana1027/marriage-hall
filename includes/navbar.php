@@ -8,9 +8,11 @@ $current_page = basename($_SERVER['PHP_SELF']);
         <div class="brand-logo-circle" style="width:38px; height:38px; border-radius:50%; overflow:hidden; display:flex; align-items:center; justify-content:center; background:white; flex-shrink:0;">
             <?php if (!empty($brand_logo)): ?>
                 <img src="assets/images/<?php echo $brand_logo; ?>" style="width:100%; height:100%; object-fit:cover;">
-            <?php else: ?>
+            <?php
+else: ?>
                 <i class="fa-solid fa-heart" style="color:var(--primary); font-size:1.6rem;"></i>
-            <?php endif; ?>
+            <?php
+endif; ?>
         </div>
         <span style="font-weight:800; font-size:1.3rem; color:#ad1457; white-space:nowrap; letter-spacing:-0.02em; font-family:'Cinzel', serif;"><?php echo $brand_name; ?></span>
     </a>
@@ -31,10 +33,12 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 <i class="fas fa-user-circle" style="font-size:2.4rem; color:var(--primary); margin-bottom:0.4rem; display:block;"></i>
                 <div style="font-family:'Poppins',sans-serif; font-weight:700; font-size:0.9rem; color:var(--dark);"><?php echo htmlspecialchars($_SESSION['user_name']); ?></div>
                 <div style="font-size:0.7rem; color:#22c55e; font-weight:600; margin-top:0.15rem;">&#9679; Online</div>
-            <?php else: ?>
+            <?php
+else: ?>
                 <div style="font-family:'Poppins',sans-serif; font-weight:700; font-size:0.8rem; color:var(--primary);"><?php echo $brand_name; ?></div>
                 <div style="font-size:0.65rem; color:var(--gray); margin-top:0.15rem;">Where Comfort Meets Celebration</div>
-            <?php endif; ?>
+            <?php
+endif; ?>
             <div style="width:30px; height:2px; background:var(--secondary); margin:0.6rem auto 0; border-radius:1px; opacity:0.5;"></div>
         </li>
         <li>
@@ -95,7 +99,8 @@ $current_page = basename($_SERVER['PHP_SELF']);
                         <a href="admin/dashboard.php" class="udrop-link" role="menuitem">
                             <i class="fas fa-cog"></i> Admin Panel
                         </a>
-                        <?php endif; ?>
+                        <?php
+    endif; ?>
 
                         <a href="logout.php" class="udrop-link udrop-logout" role="menuitem">
                             <i class="fas fa-sign-out-alt"></i> LOGOUT
@@ -116,20 +121,23 @@ $current_page = basename($_SERVER['PHP_SELF']);
                     <i class="fas fa-cog"></i> Admin
                 </a>
             </li>
-            <?php endif; ?>
+            <?php
+    endif; ?>
             <li class="nav-mobile-only">
                 <a href="logout.php">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </a>
             </li>
 
-        <?php else: ?>
+        <?php
+else: ?>
             <li class="nav-btn-wrap">
                 <a href="login.php" class="btn btn-outline btn-sm <?php echo $current_page === 'login.php' ? 'active' : ''; ?>">
                     <i class="fas fa-sign-in-alt"></i> Login
                 </a>
             </li>
-        <?php endif; ?>
+        <?php
+endif; ?>
     </ul>
 </nav>
 

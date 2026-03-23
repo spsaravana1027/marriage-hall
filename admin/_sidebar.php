@@ -7,9 +7,11 @@ $current_page = basename($_SERVER['PHP_SELF']);
         <div style="width:40px; height:40px; border-radius:50%; overflow:hidden; display:flex; align-items:center; justify-content:center; background:white; flex-shrink:0; box-shadow:0 2px 5px rgba(0,0,0,0.2);">
             <?php if (!empty($brand_logo)): ?>
                 <img src="../assets/images/<?php echo htmlspecialchars($brand_logo); ?>" style="width:100%; height:100%; object-fit:cover;">
-            <?php else: ?>
+            <?php
+else: ?>
                 <i class="fa-solid fa-heart" style="color:var(--primary); font-size:1.2rem;"></i>
-            <?php endif; ?>
+            <?php
+endif; ?>
         </div>
         <div style="font-weight:800; font-size:1.25rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:200px; line-height:1.2; color: white;">
             <?php echo htmlspecialchars($brand_name); ?>
@@ -50,19 +52,21 @@ $current_page = basename($_SERVER['PHP_SELF']);
         </div>
         <div class="sidebar-submenu">
             <div class="sidebar-models-scroll" style="padding-left:0.5rem;">
-                <?php 
-                try {
-                    $sidebar_halls = $pdo->query("SELECT id, name FROM halls ORDER BY name ASC")->fetchAll();
-                    foreach ($sidebar_halls as $shall): 
-                        $is_h_active = (isset($_GET['id']) && $_GET['id'] == $shall['id'] && $current_page === 'manage_halls.php');
-                ?>
+                <?php
+try {
+    $sidebar_halls = $pdo->query("SELECT id, name FROM halls ORDER BY name ASC")->fetchAll();
+    foreach ($sidebar_halls as $shall):
+        $is_h_active = (isset($_GET['id']) && $_GET['id'] == $shall['id'] && $current_page === 'manage_halls.php');
+?>
                     <a href="manage_halls.php?id=<?php echo $shall['id']; ?>" class="sidebar-link <?php echo $is_h_active ? 'active' : ''; ?>" style="padding: 0.5rem 1rem; font-size: 0.82rem; margin-bottom: 0;">
                         <i class="fas fa-angle-right" style="font-size:0.7rem; opacity:0.5; margin-right:0.4rem;"></i> <i class="fas fa-hotel" style="font-size:0.8rem; opacity: 0.7;"></i> <?php echo htmlspecialchars($shall['name']); ?>
                     </a>
-                <?php 
-                    endforeach; 
-                } catch (Exception $e) {} 
-                ?>
+                <?php
+    endforeach;
+}
+catch (Exception $e) {
+}
+?>
             </div>
         </div>
 
@@ -148,4 +152,4 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 
-
+
