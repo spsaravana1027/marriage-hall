@@ -1,10 +1,13 @@
 <!-- GLOBAL ALERT MODAL -->
 <div id="globalAlertModal" class="alert-modal-overlay">
     <div class="alert-modal-box">
+        <div class="alert-modal-close" onclick="closeAlertModal()"><i class="fas fa-times"></i></div>
         <div id="alertModalIcon" class="alert-modal-icon"></div>
         <h3 id="alertModalTitle" class="alert-modal-title"></h3>
         <p id="alertModalMessage" class="alert-modal-message"></p>
-        <button onclick="closeAlertModal()" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 1rem;">OK, Got it</button>
+        <div class="alert-modal-footer">
+            <button onclick="closeAlertModal()" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 1.1rem; border-radius: 16px; font-weight: 700; font-size: 1rem; letter-spacing: 0.02em;">OK, Got it</button>
+        </div>
     </div>
 </div>
 
@@ -33,8 +36,24 @@ function closeAlertModal() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Look for both .alert classes and potential PHP session variables passed to JS
-    const alerts = document.querySelectorAll('.alert');
+    // 1. Handle PHP Session Messages
+    <?php if (isset($_SESSION['success'])): ?>
+        showAlertModal('success', 'Success!', '<?php echo addslashes($_SESSION['success']); ?>');
+        <?php unset($_SESSION['success']); ?>
+    <?php endif; ?>
+
+    <?php if (isset($_SESSION['error'])): ?>
+        showAlertModal('error', 'Oops!', '<?php echo addslashes($_SESSION['error']); ?>');
+        <?php unset($_SESSION['error']); ?>
+    <?php endif; ?>
+
+    <?php if (isset($_SESSION['msg'])): ?>
+        showAlertModal('info', 'Notification', '<?php echo addslashes($_SESSION['msg']); ?>');
+        <?php unset($_SESSION['msg']); ?>
+    <?php endif; ?>
+
+    // 2. Handle Inline .alert elements (Automatic Conversion)
+    const alerts = document.querySelectorAll('.alert:not(.modalized)');
     if (alerts.length > 0) {
         alerts.forEach(alert => {
             let type = 'info';

@@ -119,9 +119,9 @@ try {
     <div class="admin-main">
         <!-- Topbar -->
         <div class="admin-topbar">
-            <div>
-                <div style="font-weight:700;font-size:1rem;">Management Reports</div>
-                <div style="font-size:0.78rem;color:var(--gray);">Generate and print business performance</div>
+            <div style="display:flex; align-items:center; gap:0.75rem;">
+                <h2 style="font-weight:700; font-size:1.1rem; margin:0; color:var(--dark);">Management Reports</h2>
+                <span style="font-size:0.78rem; color:var(--gray); margin-top:0.2rem;">Generate and print business performance</span>
             </div>
             <div style="display:flex;align-items:center;gap:1rem;">
                 <div style="display:flex;align-items:center;gap:0.5rem;background:var(--bg);padding:0.4rem 1rem;border-radius:var(--radius-full);border:1px solid var(--border);font-size:0.85rem;font-weight:600;">

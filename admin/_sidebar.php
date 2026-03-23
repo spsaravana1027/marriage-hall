@@ -80,15 +80,13 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 <a href="site_settings.php" class="sidebar-link <?php echo $current_page === 'site_settings.php' ? 'active' : ''; ?>" style="font-size:0.85rem;">
                     <i class="fas fa-angle-right" style="font-size:0.7rem; opacity:0.5; margin-right:0.4rem;"></i> <i class="fas fa-cog" style="font-size:0.9rem;"></i> Site Settings
                 </a>
-                <a href="../index.php" class="sidebar-link" target="_blank" style="font-size:0.85rem;">
-                    <i class="fas fa-angle-right" style="font-size:0.7rem; opacity:0.5; margin-right:0.4rem;"></i> <i class="fas fa-external-link-alt" style="font-size:0.9rem;"></i> View Website
-                </a>
+
             </div>
         </div>
     </nav>
 
-    <div style="padding: 1rem; text-align: center; opacity: 0.5;">
-        <div style="font-size: 0.65rem; color: var(--gray-light); letter-spacing: 0.05em;"><?php echo $brand_name; ?> Admin</div>
+    <div style="padding: 1rem; text-align: center;">
+        <div style="font-size: 0.65rem; color: rgba(255,255,255,0.8); letter-spacing: 0.05em; font-weight: 600;"><?php echo $brand_name; ?> Admin</div>
     </div>
 
     <div class="sidebar-footer">

@@ -462,3 +462,4 @@ document.addEventListener('keydown', function(e) {
     }
 });
 </script>
+<?php include_once 'alerts.php'; ?>

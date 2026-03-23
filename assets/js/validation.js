@@ -6,8 +6,12 @@
 document.addEventListener('DOMContentLoaded', () => {
     const validationRules = {
         name: {
-            regex: /^[a-zA-Z\s]{3,50}$/,
-            error: 'Name must be 3-50 letters only.'
+            regex: /^[a-zA-Z\s]{2,50}$/,
+            error: 'Name must be 2-50 letters only.'
+        },
+        brand: {
+            regex: /^[a-zA-Z0-9\s&.\-,']{3,60}$/,
+            error: '3-60 chars (Letters, Numbers, & . - , \' allowed)'
         },
         email: {
             regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,

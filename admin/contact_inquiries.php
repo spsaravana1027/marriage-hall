@@ -124,9 +124,9 @@ $total_inquiries = count($inquiries);
 
     <div class="admin-main">
         <div class="admin-topbar">
-            <div>
-                <div style="font-weight:700;font-size:1rem;">Contact Inquiries</div>
-                <div style="font-size:0.78rem;color:var(--gray);"><?php echo $total_inquiries; ?> total inquiries submitted by users</div>
+            <div style="display:flex; align-items:center; gap:0.75rem;">
+                <h2 style="font-weight:700; font-size:1.1rem; margin:0; color:var(--dark);">Contact Inquiries</h2>
+                <span style="font-size:0.78rem; color:var(--gray); margin-top:0.2rem;"><?php echo $total_inquiries; ?> total inquiries</span>
             </div>
         </div>
 

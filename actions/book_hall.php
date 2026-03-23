@@ -101,7 +101,14 @@ try {
         // Get user info
         $user_info = $pdo->prepare("SELECT name, email, phone FROM users WHERE id = ?");
         $user_info->execute([$user_id]);
-        $user = $user_info->fetch();
+        $db_user = $user_info->fetch();
+        
+        // Use POSTed details if provided, otherwise fallback to DB
+        $user = [
+            'name'  => trim($_POST['booker_name']  ?? $db_user['name']),
+            'email' => trim($_POST['booker_email'] ?? $db_user['email']),
+            'phone' => trim($_POST['booker_phone'] ?? $db_user['phone'])
+        ];
 
         // Get slot info
         $slot_stmt = $pdo->prepare("SELECT name FROM slots WHERE id = ?");

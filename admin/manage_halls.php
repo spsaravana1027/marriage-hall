@@ -122,9 +122,9 @@ try {
     <?php include '_sidebar.php'; ?>
     <div class="admin-main">
         <div class="admin-topbar">
-            <div>
-                <div style="font-weight:700;font-size:1rem;">Manage Halls</div>
-                <div style="font-size:0.78rem;color:var(--gray);margin-top:0.25rem;"><?php echo count($halls); ?> halls registered</div>
+            <div style="display:flex; align-items:center; gap:0.75rem;">
+                <h2 style="font-weight:700; font-size:1.1rem; margin:0; color:var(--dark);">Manage Halls</h2>
+                <span style="font-size:0.78rem; color:var(--gray); margin-top:0.2rem;"><?php echo count($halls); ?> halls registered</span>
             </div>
             <a href="?action=add" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Add New Hall</a>
         </div>

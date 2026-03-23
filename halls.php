@@ -470,22 +470,33 @@ else {
 
                                     <div class="form-group">
                                         <label><i class="fas fa-tag"></i> Event Name</label>
-                                        <input type="text" name="event_name" class="form-control" placeholder="e.g. Wedding Reception" required>
+                                        <select name="event_name" class="form-control" required>
+                                            <option value="" disabled selected>- Select event type -</option>
+                                            <option value="Wedding">Wedding (Thirumanam)</option>
+                                            <option value="Reception">Reception</option>
+                                            <option value="Betrothal">Betrothal (Nichayathartham)</option>
+                                            <option value="Birthday Party">Birthday Party</option>
+                                            <option value="Puberty Ceremony">Puberty Ceremony (Manjal Neerattu)</option>
+                                            <option value="Baby Shower">Baby Shower (Valaikappu)</option>
+                                            <option value="Ear Piercing">Ear Piercing (Kadhukuthu)</option>
+                                            <option value="Meeting / Seminar">Meeting / Seminar</option>
+                                            <option value="Other">Other Event</option>
+                                        </select>
                                     </div>
 
                                     <div class="form-group">
                                         <label><i class="fas fa-user"></i> Your Name</label>
-                                        <input type="text" name="booker_name" class="form-control" value="<?php echo htmlspecialchars($user_name); ?>" readonly style="background:#f8fafc;">
+                                        <input type="text" name="booker_name" data-validate="name" class="form-control" value="<?php echo htmlspecialchars($user_name); ?>" required>
                                     </div>
 
                                     <div class="form-group">
                                         <label><i class="fas fa-phone"></i> Contact Number</label>
-                                        <input type="tel" name="booker_phone" class="form-control" value="<?php echo htmlspecialchars($user_phone); ?>" readonly style="background:#f8fafc;">
+                                        <input type="tel" name="booker_phone" data-validate="phone" class="form-control" value="<?php echo htmlspecialchars($user_phone); ?>" required>
                                     </div>
 
                                     <div class="form-group">
                                         <label><i class="fas fa-envelope"></i> Email</label>
-                                        <input type="email" name="booker_email" class="form-control" value="<?php echo htmlspecialchars($user_email); ?>" readonly style="background:#f8fafc;">
+                                        <input type="email" name="booker_email" data-validate="email" class="form-control" value="<?php echo htmlspecialchars($user_email); ?>" required>
                                     </div>
 
                                     <div class="form-group">
@@ -519,9 +530,9 @@ else {
 
                                     <!-- Price Breakdown -->
 
-                                    <div class="price-row total">
-                                        <span>Total Hall Rate</span>
-                                        <span id="hallRate">Rs. <?php echo number_format($current_hall['price_per_day']); ?></span>
+                                    <div class="price-row total" style="border-top:1px solid var(--border); padding-top:1rem; margin-top:0.5rem; display:flex; justify-content:space-between; align-items:center;">
+                                        <span style="font-weight:700; color:var(--dark); font-size:1.1rem;">Total Hall Rate</span>
+                                        <span id="hallRate" style="font-weight:800; color:var(--dark); font-size:1.1rem; font-family:'Poppins',sans-serif;">Rs. <?php echo number_format($current_hall['price_per_day']); ?></span>
                                     </div>
 
                                     <!-- Advance Amount & Payment Info (hidden until slot selected) -->
@@ -552,8 +563,9 @@ else {
                                 </div>
                                 <input type="hidden" name="advance_amount" id="advance_amount_input" value="0">
 
-                            <button type="submit" class="btn btn-primary btn-lg" style="width:100%;justify-content:center;margin-top:1.25rem;">
-                                <i class="fas fa-check-circle"></i> Confirm Booking
+                            <button type="submit" class="btn btn-primary btn-lg" style="width:100%; display:flex; align-items:center; justify-content:center; gap:0.6rem; padding:0.9rem; margin-top:1.25rem; border-radius:var(--radius-full); box-shadow:0 8px 20px rgba(233, 30, 99, 0.3);">
+                                <i class="fas fa-check-circle" style="font-size:1.05rem; margin-top:-1px;"></i>
+                                <span style="font-weight:700; font-size:1rem;">Confirm Booking</span>
                             </button>
 
                             <p style="text-align:center;font-size:0.75rem;color:var(--gray-light);margin-top:0.75rem;">

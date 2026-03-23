@@ -163,9 +163,9 @@ try {
     <?php include '_sidebar.php'; ?>
     <div class="admin-main">
         <div class="admin-topbar">
-            <div>
-                <div style="font-weight:700;font-size:1rem;">Gallery Management</div>
-                <div style="font-size:0.78rem;color:var(--gray);">Add or remove photos from your website gallery</div>
+            <div style="display:flex; align-items:center; gap:0.75rem;">
+                <h2 style="font-weight:700; font-size:1.1rem; margin:0; color:var(--dark);">Gallery Management</h2>
+                <span style="font-size:0.78rem; color:var(--gray); margin-top:0.2rem;">Add or remove photos from your website</span>
             </div>
         </div>
 

@@ -64,7 +64,7 @@ try {
     <style>
         body { padding-top: 0; }
         .hero { min-height: 100vh; display: flex; align-items: center; position: relative; overflow: hidden; }
-        .hero-content { position: relative; z-index: 3; padding: 8vh 5% 0; width: 100%; }
+        .hero-content { position: relative; z-index: 3; padding: 15vh 5% 0; width: 100%; }
         .hero-tag { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.9); padding: 0.4rem 1rem; border-radius: var(--radius-full); font-size: 0.8rem; font-weight: 600; margin-bottom: 1.5rem; backdrop-filter: blur(4px); }
         .hero h1 { font-size: clamp(2.5rem, 5vw, 4.5rem); color: white; font-weight: 900; line-height: 1.05; letter-spacing: -0.03em; margin-bottom: 1.5rem; }
         .hero h1 span { background: linear-gradient(120deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
@@ -295,7 +295,9 @@ try {
                     <div class="section-label"><i class="fas fa-building"></i> Our Collection</div>
                     <h2 class="section-heading">Featured <span>Halls & Venues</span></h2>
                 </div>
-                <a href="halls.php" class="btn btn-outline reveal">View All Halls <i class="fas fa-arrow-right"></i></a>
+                <?php if(count($featured_halls) > 3): ?>
+                    <a href="halls.php" class="btn btn-outline reveal">View All Halls <i class="fas fa-arrow-right"></i></a>
+                <?php endif; ?>
             </div>
             <div class="halls-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2rem;">
                 <?php foreach ($featured_halls as $hall): ?>

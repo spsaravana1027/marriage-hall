@@ -92,6 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             i.classList.toggle('fa-eye-slash');
         }
     </script>
+    <?php include '../includes/alerts.php'; ?>
 </body>
 </html>
 
