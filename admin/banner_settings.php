@@ -27,6 +27,36 @@ if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
     $current_banners = [$current_banner];
 }
 
+// ===== HANDLE BANNER DELETION =====
+if (isset($_GET['delete_banner'])) {
+    $to_delete = $_GET['delete_banner'];
+    $key = array_search($to_delete, $current_banners);
+    
+    if ($key !== false) {
+        // Remove from array
+        unset($current_banners[$key]);
+        $current_banners = array_values($current_banners); // re-index
+        
+        // At least one banner must remain? (Optional, let's allow it but check index.php)
+        // If empty, let's keep one default or just save empty array
+        $stored_value = count($current_banners) > 0 ? (count($current_banners) > 1 ? json_encode($current_banners) : $current_banners[0]) : 'hall image1.webp';
+        
+        try {
+            $stmt = $pdo->prepare("UPDATE settings SET setting_value = ? WHERE setting_key = 'home_banner'");
+            if ($stmt->execute([$stored_value])) {
+                // Delete actual file if it is in banners folder
+                if (strpos($to_delete, 'home_banner_') !== false) {
+                    $file_path = '../assets/images/banners/' . $to_delete;
+                    if (file_exists($file_path)) unlink($file_path);
+                }
+                $msg = "Banner image deleted successfully!";
+                // Refresh $current_banners for display
+                $current_banners = count($current_banners) > 0 ? $current_banners : ['hall image1.webp'];
+            }
+        } catch (Exception $e) { $error = "Delete failed: " . $e->getMessage(); }
+    }
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_FILES['banner_images']) && is_array($_FILES['banner_images']['name'])) {
         $upload_dir = '../assets/images/banners/';
@@ -64,9 +94,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->execute([$stored_value]);
                 $current_banners = $all_banners;
                 $current_banner = $current_banners[0];
-                echo "<script>alert('Banner images updated successfully!');
-                        window.location.href = 'banner_settings.php';
-                </script>";
+                $msg = "Banner images updated successfully!";
+                $current_banners = $all_banners;
+                $current_banner = $current_banners[0];
+                // Remove the old alert script to use the new modal system
+                // echo "<script>alert('Banner images updated successfully!');
+                //         window.location.href = 'banner_settings.php';
+                // </script>";
             } catch (Exception $e) {
                 $error = 'Database update failed: ' . $e->getMessage();
             }
@@ -92,9 +126,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php include '_sidebar.php'; ?>
     <div class="admin-main">
         <div class="admin-topbar">
-            <div>
-                <div style="font-weight:700;font-size:1rem;">Site Settings</div>
-                <div style="font-size:0.78rem;color:var(--gray);">Manage homepage appearance</div>
+            <div style="display:flex; align-items:center; gap:0.75rem;">
+                <h2 style="font-weight:700; font-size:1.1rem; margin:0; color:var(--dark);">Banner Settings</h2>
+                <span style="font-size:0.78rem; color:var(--gray); margin-top:0.2rem;">Manage homepage appearance</span>
             </div>
         </div>
 
@@ -119,11 +153,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div style="width:100%; height:250px; border-radius:var(--radius); overflow:hidden; background:#eee;">
                         <img src="<?php echo htmlspecialchars($main_image_path); ?>" alt="Banner Preview" style="width:100%; height:100%; object-fit:cover;">
                     </div>
-                    <div style="margin-top:0.8rem; display:flex; gap:0.6rem; flex-wrap:wrap;">
+                    <div style="margin-top:1.2rem; display:flex; gap:1.2rem; flex-wrap:wrap;">
                         <?php foreach ($display_banners as $banner_img):
                             $preview = (strpos($banner_img, 'hall image') !== false) ? '../' . $banner_img : '../assets/images/banners/' . $banner_img;
                         ?>
-                            <img src="<?php echo htmlspecialchars($preview); ?>" alt="Banner Thumb" style="width:80px; height:45px; object-fit:cover; border:1px solid var(--border); border-radius:6px;">
+                            <div style="position:relative; group;">
+                                <img src="<?php echo htmlspecialchars($preview); ?>" alt="Banner Thumb" style="width:120px; height:68px; object-fit:cover; border:2px solid var(--border); border-radius:8px; transition:0.3s;">
+                                <?php if (count($display_banners) > 1 || $banner_img !== 'hall image1.webp'): ?>
+                                    <a href="?delete_banner=<?php echo urlencode($banner_img); ?>" 
+                                       onclick="return confirm('Sure to delete this banner image?')"
+                                       style="position:absolute; top:-8px; right:-8px; background:#ef4444; color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.7rem; border:2px solid white; box-shadow:0 2px 5px rgba(0,0,0,0.2); text-decoration:none; transition:0.3s;"
+                                       onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                <?php endif; ?>
+                            </div>
                         <?php endforeach; ?>
                     </div>
                 </div>

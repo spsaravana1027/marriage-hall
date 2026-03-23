@@ -186,9 +186,9 @@ try {
     <?php include '_sidebar.php'; ?>
     <div class="admin-main">
         <div class="admin-topbar">
-            <div>
-                <div style="font-weight:700;font-size:1rem;">Manage Bookings</div>
-                <div style="font-size:0.78rem;color:var(--gray);"><?php echo count($bookings); ?> bookings found</div>
+            <div style="display:flex; align-items:center; gap:0.75rem;">
+                <h2 style="font-weight:700; font-size:1.1rem; margin:0; color:var(--dark);">Manage Bookings</h2>
+                <span style="font-size:0.78rem; color:var(--gray); margin-top:0.2rem;"><?php echo count($bookings); ?> bookings found</span>
             </div>
         </div>
 

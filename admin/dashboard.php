@@ -218,7 +218,7 @@ try {
                             <a href="manage_halls.php?action=add" class="quick-action"><i class="fas fa-plus"></i> Add New Hall</a>
                             <a href="manage_bookings.php?status=pending" class="quick-action"><i class="fas fa-hourglass-half"></i> Review Pending (<?php echo $stats['pending']; ?>)</a>
                             <a href="manage_users.php" class="quick-action"><i class="fas fa-users"></i> Manage Users</a>
-                            <a href="../index.php" target="_blank" class="quick-action"><i class="fas fa-external-link-alt"></i> View Website</a>
+
                         </div>
                     </div>
 

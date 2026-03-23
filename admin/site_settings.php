@@ -53,8 +53,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_POST[$key])) {
             $val = trim($_POST[$key]);
             try {
-                $stmt = $pdo->prepare("UPDATE settings SET setting_value = ? WHERE setting_key = ?");
-                $stmt->execute([$val, $key]);
+                $stmt = $pdo->prepare("REPLACE INTO settings (setting_key, setting_value) VALUES (?, ?)");
+                $stmt->execute([$key, $val]);
                 $success_count++;
             } catch (Exception $e) {
                 $error = "Failed to update $label: " . $e->getMessage();
@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (move_uploaded_file($_FILES['brand_logo']['tmp_name'], $upload_path)) {
             try {
-                $stmt = $pdo->prepare("UPDATE settings SET setting_value = ? WHERE setting_key = 'brand_logo'");
+                $stmt = $pdo->prepare("REPLACE INTO settings (setting_key, setting_value) VALUES ('brand_logo', ?)");
                 $stmt->execute([$new_logo_filename]);
                 $current_logo = $new_logo_filename;
                 $msg = 'Brand logo updated successfully!';
@@ -144,9 +144,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php include '_sidebar.php'; ?>
     <div class="admin-main">
         <div class="admin-topbar">
-            <div>
-                <div style="font-weight:700;font-size:1rem;">Dynamic Branding</div>
-                <div style="font-size:0.78rem;color:var(--gray);">Manage brand name and logo</div>
+            <div style="display:flex; align-items:center; gap:0.75rem;">
+                <h2 style="font-weight:700; font-size:1.1rem; margin:0; color:var(--dark);">Dynamic Branding</h2>
+                <span style="font-size:0.78rem; color:var(--gray); margin-top:0.2rem;">Manage brand name and logo</span>
             </div>
         </div>
 
@@ -165,7 +165,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <form method="POST">
                         <div class="form-group" style="margin-bottom:1.5rem;">
                             <label>Website / Hall Name</label>
-                            <input type="text" name="brand_name" data-validate="name" class="form-control" value="<?php echo htmlspecialchars($current_name); ?>" required>
+                            <input type="text" name="brand_name" data-validate="brand" class="form-control" value="<?php echo htmlspecialchars($current_name); ?>" required>
                             <small style="color:var(--gray); font-size:0.75rem;">This name will appear across the entire website, page titles, and chatbot.</small>
                         </div>
 

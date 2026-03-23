@@ -131,3 +131,4 @@
     }
 }
 </style>
+<?php include_once 'alerts.php'; ?>
