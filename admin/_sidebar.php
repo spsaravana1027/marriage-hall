@@ -77,8 +77,14 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 <a href="manage_gallery.php" class="sidebar-link <?php echo $current_page === 'manage_gallery.php' ? 'active' : ''; ?>" style="font-size:0.85rem;">
                     <i class="fas fa-angle-right" style="font-size:0.7rem; opacity:0.5; margin-right:0.4rem;"></i> <i class="fas fa-images" style="font-size:0.9rem;"></i> Manage Gallery
                 </a>
+                <a href="manage_explore.php" class="sidebar-link <?php echo $current_page === 'manage_explore.php' ? 'active' : ''; ?>" style="font-size:0.85rem;">
+                    <i class="fas fa-angle-right" style="font-size:0.7rem; opacity:0.5; margin-right:0.4rem;"></i> <i class="fas fa-compass" style="font-size:0.9rem;"></i> Manage Explore
+                </a>
                 <a href="site_settings.php" class="sidebar-link <?php echo $current_page === 'site_settings.php' ? 'active' : ''; ?>" style="font-size:0.85rem;">
                     <i class="fas fa-angle-right" style="font-size:0.7rem; opacity:0.5; margin-right:0.4rem;"></i> <i class="fas fa-cog" style="font-size:0.9rem;"></i> Site Settings
+                </a>
+                <a href="update_credentials.php" class="sidebar-link <?php echo $current_page === 'update_credentials.php' ? 'active' : ''; ?>" style="font-size:0.85rem;">
+                    <i class="fas fa-angle-right" style="font-size:0.7rem; opacity:0.5; margin-right:0.4rem;"></i> <i class="fas fa-cog" style="font-size:0.9rem;"></i> Update Credentials
                 </a>
 
             </div>
@@ -90,7 +96,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
     </div>
 
     <div class="sidebar-footer">
-        <a href="../logout.php" class="sidebar-link" style="background:rgba(239,68,68,0.1);color:#fca5a5;">
+        <a href="logout.php" onclick="return confirm('Are you sure to Logout?')" class="sidebar-link" style="background:rgba(239,68,68,0.1);color:#fca5a5;">
             <i class="fas fa-sign-out-alt"></i> Logout
         </a>
     </div>
@@ -146,4 +152,4 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 
-
+

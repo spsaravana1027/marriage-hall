@@ -14,9 +14,9 @@ function registerUser($pdo, $name, $email, $phone, $password, $role = 'user') {
 /**
  * Login a user
  */
-function loginUser($pdo, $login_id, $password) {
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ? OR phone = ?");
-    $stmt->execute([$login_id, $login_id]);
+function loginUser($pdo, $email, $password) {
+    $stmt = $pdo->prepare("SELECT * FROM admin WHERE email = ?");
+    $stmt->execute([$email]);
     $user = $stmt->fetch();
 
     if ($user && password_verify($password, $user['password'])) {
