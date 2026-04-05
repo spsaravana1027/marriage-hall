@@ -12,10 +12,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email    = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
 
+    // die($email . ' - ' . $password);
+
     if (empty($email) || empty($password)) {
         $error = 'Please fill in all fields.';
     } elseif (loginUser($pdo, $email, $password)) {
         if (isAdmin()) {
+            $_SESSION['success'] = "Login successfully";
             header('Location: dashboard.php');
         } else {
             logoutUser();
@@ -61,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label>Admin Email</label>
                 <div class="input-icon-wrap">
                     <i class="fas fa-envelope"></i>
-                    <input type="email" name="email" class="form-control" placeholder="admin@srilakshmimahal.com" required value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>">
+                    <input type="email" name="email" class="form-control" placeholder="Admin Email" required value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>">
                 </div>
             </div>
             <div class="form-group">
@@ -95,6 +98,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php include '../includes/alerts.php'; ?>
 </body>
 </html>
-
 
 

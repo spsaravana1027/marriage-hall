@@ -91,7 +91,7 @@ try {
         <div class="admin-topbar">
             <div>
                 <div style="font-weight:700;font-size:1rem;">Dashboard Overview</div>
-                <div style="font-size:0.78rem;color:var(--gray);"><?php echo date('l, d F Y'); ?></div>
+                <!--<div style="font-size:0.78rem;color:var(--gray);"><?php echo date('l, d F Y'); ?></div>-->
             </div>
             <div style="display:flex;align-items:center;gap:1rem;">
                 <?php if ($stats['pending'] > 0): ?>
@@ -109,7 +109,7 @@ try {
         <div class="admin-content">
             <!-- Greeting -->
             <div class="reveal" style="margin-bottom:1rem;">
-                <div class="greeting">Welcome, <?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Admin'); ?>!</div>
+                <div class="greeting">Welcome, Admin!</div>
                 <div style="color:var(--gray);font-size:0.9rem;">Here's what's happening with your halls today.</div>
             </div>
 

@@ -58,6 +58,11 @@ $current_page = basename($_SERVER['PHP_SELF']);
             </a>
         </li>
         <li>
+            <a href="explore.php" class="<?php echo $current_page === 'explore.php' ? 'active' : ''; ?>">
+                <i class="fas fa-compass"></i> Explore
+            </a>
+        </li>
+        <li>
             <a href="contact.php" class="<?php echo $current_page === 'contact.php' ? 'active' : ''; ?>">
                 <i class="fas fa-envelope"></i> Contact Us
             </a>
