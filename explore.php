@@ -229,12 +229,7 @@ try {
 
     <main>
         <section class="explore-section">
-            <div class="explore-container">
-                <div class="section-header">
-                    <h1>Explore Our World</h1>
-                    <p>Discover the beauty and elegance of our venues and services</p>
-                </div>
-
+            <div class="explore-container" style="padding-top: 6rem;">
                 <div class="explore-grid" id="exploreGrid">
                     <?php if (empty($explore_items)): ?>
                         <div class="empty-state">
@@ -256,6 +251,12 @@ try {
                                     </div>
                                 </div>
                                 <div class="explore-content">
+                                    <h3 style="font-size:1.15rem; font-weight:800; color:var(--dark); margin-bottom:0.15rem;"><?php echo htmlspecialchars($item['title'] ?: 'Venue Highlight'); ?></h3>
+                                    <?php if ($item['subtitle']): ?>
+                                        <p style="font-size:0.8rem; font-weight:700; color:var(--primary); text-transform:uppercase; margin-bottom:0.75rem; display:flex; align-items:center; gap:0.4rem;">
+                                            <i class="fas fa-location-dot" style="font-size:0.7rem;"></i> <?php echo htmlspecialchars($item['subtitle']); ?>
+                                        </p>
+                                    <?php endif; ?>
                                     <p class="explore-description">
                                         <?php echo htmlspecialchars($item['description']); ?>
                                     </p>

@@ -12,11 +12,14 @@ $filter_status = isset($_GET['status']) ? $_GET['status'] : '';
 
 // Fetch user's bookings
 $query = "
-    SELECT b.*, h.name AS hall_name, h.location, h.main_image, 
+    SELECT b.*, 
+           h.name AS hall_name, h.location AS hall_location, h.main_image AS hall_image,
+           r.name AS room_name, r.location AS room_location, r.main_image AS room_image,
            s.name AS slot_name, s.start_time, s.end_time,
-           h.price_per_day
+           h.price_per_day AS hall_price, r.price_per_day AS room_price
     FROM bookings b
-    JOIN halls h ON b.hall_id = h.id
+    LEFT JOIN halls h ON b.hall_id = h.id
+    LEFT JOIN rooms r ON b.room_id = r.id
     LEFT JOIN slots s ON b.slot_id = s.id
     WHERE b.user_id = ?
 ";
@@ -180,16 +183,19 @@ if (isset($_GET['success'])) {
 
                     <div class="booking-card-body">
                         <div class="booking-hall-img">
-                            <?php if ($b['main_image']): ?>
-                                <img src="assets/images/halls/<?php echo htmlspecialchars($b['main_image']); ?>" alt="">
+                            <?php 
+                            $img_path = $b['hall_id'] ? 'halls/' . $b['hall_image'] : 'rooms/' . $b['room_image'];
+                            $has_img = $b['hall_id'] ? !empty($b['hall_image']) : !empty($b['room_image']);
+                            if ($has_img): ?>
+                                <img src="assets/images/<?php echo $img_path; ?>" alt="">
                             <?php else: ?>
-                                <div class="placeholder"><i class="fas fa-building-columns"></i></div>
+                                <div class="placeholder"><i class="fas <?php echo $b['room_id'] ? 'fa-bed' : 'fa-building-columns'; ?>"></i></div>
                             <?php endif; ?>
                         </div>
 
                         <div>
-                            <h4 style="margin-bottom:0.35rem;font-size:1.05rem;"><?php echo htmlspecialchars($b['hall_name']); ?></h4>
-                            <p style="color:var(--gray);font-size:0.82rem;margin-bottom:0.75rem;"><i class="fas fa-map-marker-alt"></i> <?php echo htmlspecialchars($b['location']); ?></p>
+                            <h4 style="margin-bottom:0.35rem;font-size:1.05rem;"><?php echo htmlspecialchars($b['hall_name'] ?? $b['room_name']); ?> <span style="font-size:0.6rem;color:var(--primary);vertical-align:middle;margin-left:0.5rem;background:var(--primary-light);padding:2px 6px;border-radius:4px;"><?php echo $b['room_id'] ? 'ROOM' : 'HALL'; ?></span></h4>
+                            <p style="color:var(--gray);font-size:0.82rem;margin-bottom:0.75rem;"><i class="fas fa-map-marker-alt"></i> <?php echo htmlspecialchars($b['hall_location'] ?? $b['room_location']); ?></p>
 
                             <div style="display:flex;flex-wrap:wrap;gap:1.25rem;font-size:0.8rem;color:var(--dark-3);">
                                 <span><i class="fas fa-tag" style="color:var(--primary);"></i> <?php echo htmlspecialchars($b['event_name']); ?></span>
@@ -210,9 +216,9 @@ if (isset($_GET['success'])) {
                         </div>
 
                         <div style="text-align:right;min-width:130px;display:flex;flex-direction:column;gap:0.5rem;">
-                            <a href="halls.php?id=<?php echo $b['hall_id']; ?>" class="btn btn-outline btn-sm">View Details</a>
+                            <a href="halls.php?<?php echo $b['room_id'] ? 'room_id='.$b['room_id'] : 'id='.$b['hall_id']; ?>" class="btn btn-outline btn-sm">View Details</a>
                             <?php if (($b['status'] === 'confirmed' || $b['status'] === 'processing') && $b['payment_status'] !== 'paid'): ?>
-                                <button onclick="openPaymentModal('<?php echo $b['booking_id']; ?>', '<?php echo $b['hall_name']; ?>', <?php echo $b['advance_amount']; ?>)" class="btn btn-primary btn-sm">
+                                <button onclick="openPaymentModal('<?php echo $b['booking_id']; ?>', '<?php echo htmlspecialchars($b['hall_name'] ?? $b['room_name']); ?>', <?php echo $b['advance_amount']; ?>)" class="btn btn-primary btn-sm">
                                     <i class="fas fa-credit-card"></i> Pay Now
                                 </button>
                             <?php endif; ?>

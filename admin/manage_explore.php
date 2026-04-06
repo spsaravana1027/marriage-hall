@@ -6,77 +6,77 @@ if (!isLoggedIn() || !isAdmin()) {
     exit();
 }
 
+// ===== INITIALIZE VARIABLES =====
 $msg = '';
 $error = '';
 $edit_id = null;
 $edit_data = null;
-
-// Create explore folder if it doesn't exist
 $explore_dir = '../assets/images/explore/';
+
 if (!is_dir($explore_dir)) {
     mkdir($explore_dir, 0777, true);
 }
 
-// Handle Image Upload
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['upload_explore'])) {
-    if (isset($_FILES['explore_image']) && $_FILES['explore_image']['error'] === 0) {
-        $description = trim($_POST['description']);
+// ===== AUTO-MIGRATION: Ensure explore columns exist =====
+if (isset($pdo) && $pdo) {
+    try {
+        $pdo->exec("ALTER TABLE explore ADD COLUMN IF NOT EXISTS title VARCHAR(255) AFTER id");
+        $pdo->exec("ALTER TABLE explore ADD COLUMN IF NOT EXISTS subtitle VARCHAR(255) AFTER title");
+    } catch(Exception $e) {}
+}
 
-        if (empty($description)) {
-            $error = 'Please enter a description for the image.';
-        } elseif ($_FILES['explore_image']['size'] > 5242880) { // 5MB limit
-            $error = 'Image size must be less than 5MB.';
-        } else {
+// Handle Image Upload & Update
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['upload_explore'])) {
+    $title = trim($_POST['title']);
+    $subtitle = trim($_POST['subtitle']);
+    $description = trim($_POST['description']);
+    $update_id = isset($_POST['edit_id']) && !empty($_POST['edit_id']) ? $_POST['edit_id'] : null;
+
+    if (empty($title)) {
+        $error = 'Please enter a title for the explore item.';
+    } else {
+        $image_uploaded = false;
+        $new_filename = '';
+
+        if (isset($_FILES['explore_image']) && $_FILES['explore_image']['error'] === 0) {
             $file_ext = pathinfo($_FILES['explore_image']['name'], PATHINFO_EXTENSION);
             $allowed_ext = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
             
-            if (!in_array(strtolower($file_ext), $allowed_ext)) {
-                $error = 'Only JPG, PNG, GIF, and WebP files are allowed.';
-            } else {
+            if (in_array(strtolower($file_ext), $allowed_ext)) {
                 $new_filename = 'explore_' . time() . '_' . rand(1000, 9999) . '.' . $file_ext;
-                $upload_path = $explore_dir . $new_filename;
-
-                if (move_uploaded_file($_FILES['explore_image']['tmp_name'], $upload_path)) {
-                    try {
-                        // Check if this is an update
-                        $update_id = isset($_POST['edit_id']) && !empty($_POST['edit_id']) ? $_POST['edit_id'] : null;
-
-                        if ($update_id) {
-                            // Fetch old image for deletion
-                            $stmt = $pdo->prepare("SELECT image_path FROM explore WHERE id = ?");
-                            $stmt->execute([$update_id]);
-                            $old_image = $stmt->fetchColumn();
-
-                            // Update record with new image
-                            $stmt = $pdo->prepare("UPDATE explore SET image_path = ?, description = ?, updated_at = NOW() WHERE id = ?");
-                            $stmt->execute([$new_filename, $description, $update_id]);
-
-                            // Delete old image
-                            if ($old_image && file_exists($explore_dir . $old_image)) {
-                                unlink($explore_dir . $old_image);
-                            }
-
-                            $msg = 'Explore item updated successfully!';
-                            
-                        } else {
-                            // Insert new record
-                            $stmt = $pdo->prepare("INSERT INTO explore (image_path, description) VALUES (?, ?)");
-                            $stmt->execute([$new_filename, $description]);
-                            $msg = 'Image added to explore successfully!';
-                        }
-                    } catch (Exception $e) {
-                        $error = 'Database error: ' . $e->getMessage();
-                        if (file_exists($upload_path)) {
-                            unlink($upload_path);
-                        }
-                    }
-                } else {
-                    $error = 'Failed to upload image. Please try again.';
+                if (move_uploaded_file($_FILES['explore_image']['tmp_name'], $explore_dir . $new_filename)) {
+                    $image_uploaded = true;
                 }
             }
         }
-    } else {
-        $error = 'Please select a valid image file.';
+
+        try {
+            if ($update_id) {
+                if ($image_uploaded) {
+                    $stmt = $pdo->prepare("SELECT image_path FROM explore WHERE id = ?");
+                    $stmt->execute([$update_id]);
+                    $old_image = $stmt->fetchColumn();
+                    if ($old_image && file_exists($explore_dir . $old_image)) unlink($explore_dir . $old_image);
+
+                    $stmt = $pdo->prepare("UPDATE explore SET image_path = ?, title = ?, subtitle = ?, description = ?, updated_at = NOW() WHERE id = ?");
+                    $stmt->execute([$new_filename, $title, $subtitle, $description, $update_id]);
+                } else {
+                    $stmt = $pdo->prepare("UPDATE explore SET title = ?, subtitle = ?, description = ?, updated_at = NOW() WHERE id = ?");
+                    $stmt->execute([$title, $subtitle, $description, $update_id]);
+                }
+                $msg = 'Explore item updated successfully!';
+            } else {
+                if ($image_uploaded) {
+                    $stmt = $pdo->prepare("INSERT INTO explore (image_path, title, subtitle, description) VALUES (?, ?, ?, ?)");
+                    $stmt->execute([$new_filename, $title, $subtitle, $description]);
+                    $msg = 'Explore item added successfully!';
+                } else {
+                    $error = 'Please select an image for a new explore item.';
+                }
+            }
+        } catch (Exception $e) {
+            $error = 'Database error: ' . $e->getMessage();
+        }
     }
 }
 
@@ -134,9 +134,10 @@ if (isset($_GET['edit']) && is_numeric($_GET['edit'])) {
     }
 }
 
+
 // Fetch all explore items
 try {
-    $stmt = $pdo->query("SELECT id, image_path, description, created_at, updated_at FROM explore ORDER BY created_at DESC");
+    $stmt = $pdo->query("SELECT * FROM explore ORDER BY created_at DESC");
     $explore_items = $stmt->fetchAll();
 } catch (Exception $e) {
     $explore_items = [];
@@ -345,16 +346,23 @@ try {
                         <input type="hidden" name="edit_id" value="<?php echo $edit_data['id']; ?>">
                     <?php endif; ?>
 
-                    <div style="display:grid; grid-template-columns: 1.1fr 0.9fr; gap:1.5rem; margin-bottom:1.5rem;">
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem; margin-bottom:1.5rem;">
                         <div style="display:flex; flex-direction:column; gap:1.25rem;">
                             <div class="form-group">
-                                <label>Description <span style="color:#ef4444;">*</span></label>
+                                <label>Explore Item Heading <span style="color:#ef4444;">*</span></label>
+                                <input type="text" name="title" class="form-control" placeholder="e.g., Traditional Stage Decor" value="<?php echo $edit_data ? htmlspecialchars($edit_data['title']) : ''; ?>" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Explore Subheading / Place name</label>
+                                <input type="text" name="subtitle" class="form-control" placeholder="e.g., Main Hall - Ground Floor" value="<?php echo $edit_data ? htmlspecialchars($edit_data['subtitle']) : ''; ?>">
+                            </div>
+                            <div class="form-group">
+                                <label>Detailed Description</label>
                                 <textarea 
                                     name="description" 
                                     class="form-control" 
-                                    rows="4" 
-                                    placeholder="Enter description for the explore item... e.g., Beautiful decorated hall with traditional theme" 
-                                    required
+                                    rows="3" 
+                                    placeholder="Enter additional details..."
                                 ><?php echo $edit_data ? htmlspecialchars($edit_data['description']) : ''; ?></textarea>
                             </div>
                         </div>
@@ -448,7 +456,11 @@ try {
                                 </div>
 
                                 <div class="explore-info">
-                                    <p class="explore-desc"><?php echo htmlspecialchars($item['description']); ?></p>
+                                    <h5 style="margin:0; font-size:0.9rem; font-weight:700; color:var(--dark);"><?php echo htmlspecialchars($item['title'] ?: 'No Title'); ?></h5>
+                                    <?php if ($item['subtitle']): ?>
+                                        <p style="margin:0; font-size:0.75rem; color:var(--primary); font-weight:600;"><?php echo htmlspecialchars($item['subtitle']); ?></p>
+                                    <?php endif; ?>
+                                    <p class="explore-desc" style="margin-top:0.35rem;"><?php echo htmlspecialchars($item['description']); ?></p>
                                     <div class="explore-date">
                                         <i class="fas fa-calendar-alt"></i>
                                         <?php echo date('d M Y', strtotime($item['created_at'])); ?>
