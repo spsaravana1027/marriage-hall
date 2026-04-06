@@ -34,9 +34,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_booking'])) {
             // Send confirmation mail if payment just became paid
             if ($p_status === 'paid' && $old_payment !== 'paid') {
                 $bk = $pdo->prepare("
-                    SELECT b.*, h.name AS hall_name, u.name AS user_name, u.email AS user_email, s.name AS slot_name
+                    SELECT b.*, h.name AS hall_name, r.name AS room_name, u.name AS user_name, u.email AS user_email, s.name AS slot_name
                     FROM bookings b
-                    JOIN halls h ON b.hall_id = h.id
+                    LEFT JOIN halls h ON b.hall_id = h.id
+                    LEFT JOIN rooms r ON b.room_id = r.id
                     JOIN users u ON b.user_id = u.id
                     LEFT JOIN slots s ON b.slot_id = s.id
                     WHERE b.id = ?
@@ -67,9 +68,10 @@ if (isset($_GET['action']) && isset($_GET['id'])) {
 
             // Send relevant status mail
             $bk = $pdo->prepare("
-                SELECT b.*, h.name AS hall_name, u.name AS user_name, u.email AS user_email, s.name AS slot_name
+                SELECT b.*, h.name AS hall_name, r.name AS room_name, u.name AS user_name, u.email AS user_email, s.name AS slot_name
                 FROM bookings b
-                JOIN halls h ON b.hall_id = h.id
+                LEFT JOIN halls h ON b.hall_id = h.id
+                LEFT JOIN rooms r ON b.room_id = r.id
                 JOIN users u ON b.user_id = u.id
                 LEFT JOIN slots s ON b.slot_id = s.id
                 WHERE b.id = ?
@@ -103,10 +105,12 @@ $filter_payment = $_GET['payment'] ?? '';
 $query = "
     SELECT b.*, 
            h.name AS hall_name, h.location AS hall_location,
+           r.name AS room_name, r.location AS room_location,
            u.name AS user_name, u.email AS user_email, u.phone AS user_phone,
            s.name AS slot_name, s.start_time, s.end_time
     FROM bookings b
-    JOIN halls h ON b.hall_id = h.id
+    LEFT JOIN halls h ON b.hall_id = h.id
+    LEFT JOIN rooms r ON b.room_id = r.id
     JOIN users u ON b.user_id = u.id
     LEFT JOIN slots s ON b.slot_id = s.id
     WHERE 1=1
@@ -126,8 +130,8 @@ if ($filter_payment) {
     $params[] = $filter_payment;
 }
 if ($filter_search) {
-    $query .= " AND (b.booking_id LIKE ? OR u.name LIKE ? OR h.name LIKE ? OR b.event_name LIKE ?)";
-    $params = array_merge($params, ["%$filter_search%", "%$filter_search%", "%$filter_search%", "%$filter_search%"]);
+    $query .= " AND (b.booking_id LIKE ? OR u.name LIKE ? OR h.name LIKE ? OR r.name LIKE ? OR b.event_name LIKE ?)";
+    $params = array_merge($params, ["%$filter_search%", "%$filter_search%", "%$filter_search%", "%$filter_search%", "%$filter_search%"]);
 }
 
 $query .= " ORDER BY b.created_at DESC";
@@ -297,8 +301,9 @@ try {
                                         <div style="font-size:0.68rem;color:var(--gray-light);"><?php echo htmlspecialchars($b['user_email']); ?></div>
                                     </td>
                                     <td style="font-size:0.875rem;">
-                                        <div style="font-weight:600;"><?php echo htmlspecialchars($b['hall_name']); ?></div>
-                                        <div style="font-size:0.72rem;color:var(--gray);"><?php echo htmlspecialchars($b['hall_location']); ?></div>
+                                        <div style="font-weight:600;"><?php echo htmlspecialchars($b['hall_name'] ?? $b['room_name']); ?></div>
+                                        <div style="font-size:0.72rem;color:var(--gray);"><?php echo htmlspecialchars($b['hall_location'] ?? $b['room_location']); ?></div>
+                                        <div style="font-size:0.65rem;color:var(--primary);font-weight:700;"><?php echo $b['room_id'] ? 'ROOM' : 'HALL'; ?></div>
                                     </td>
                                     <td style="font-size:0.875rem;"><?php echo htmlspecialchars($b['event_name']); ?></td>
                                     <td style="font-size:0.875rem;white-space:nowrap;">

@@ -30,6 +30,12 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 <a href="manage_halls.php" class="sidebar-link <?php echo $current_page === 'manage_halls.php' ? 'active' : ''; ?>" style="font-size:0.85rem;">
                     <i class="fas fa-angle-right" style="font-size:0.7rem; opacity:0.5; margin-right:0.4rem;"></i> <i class="fas fa-building" style="font-size:0.9rem;"></i> Manage Halls
                 </a>
+                <a href="manage_rooms.php" class="sidebar-link <?php echo $current_page === 'manage_rooms.php' ? 'active' : ''; ?>" style="font-size:0.85rem;">
+                    <i class="fas fa-angle-right" style="font-size:0.7rem; opacity:0.5; margin-right:0.4rem;"></i> <i class="fas fa-bed" style="font-size:0.9rem;"></i> Manage Rooms
+                </a>
+                <a href="manage_categories.php" class="sidebar-link <?php echo $current_page === 'manage_categories.php' ? 'active' : ''; ?>" style="font-size:0.85rem;">
+                    <i class="fas fa-angle-right" style="font-size:0.7rem; opacity:0.5; margin-right:0.4rem;"></i> <i class="fas fa-list" style="font-size:0.9rem;"></i> Manage Categories
+                </a>
                 <a href="manage_bookings.php" class="sidebar-link <?php echo $current_page === 'manage_bookings.php' ? 'active' : ''; ?>" style="font-size:0.85rem;">
                     <i class="fas fa-angle-right" style="font-size:0.7rem; opacity:0.5; margin-right:0.4rem;"></i> <i class="fas fa-calendar-check" style="font-size:0.9rem;"></i> Manage Bookings
                 </a>

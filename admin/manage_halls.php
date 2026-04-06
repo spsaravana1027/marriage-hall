@@ -35,8 +35,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_hall'])) {
     $location           = trim($_POST['location'] ?? '');
     $capacity           = (int)($_POST['capacity'] ?? 0);
     $price_per_day      = (float)($_POST['price_per_day'] ?? 0);
-    $morning_slot_price = (float)($_POST['morning_slot_price'] ?? 0);
-    $evening_slot_price = (float)($_POST['evening_slot_price'] ?? 0);
     $advance_amount     = (float)($_POST['advance_amount'] ?? 0);
     $description        = trim($_POST['description'] ?? '');
     $facilities         = trim($_POST['facilities'] ?? '');
@@ -64,13 +62,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_hall'])) {
             try {
                 if ($edit_id > 0) {
                     $pdo->prepare("
-                        UPDATE halls SET name=?, location=?, capacity=?, price_per_day=?, morning_slot_price=?, evening_slot_price=?, advance_amount=?, description=?, facilities=?, main_image=? WHERE id=?
-                    ")->execute([$name, $location, $capacity, $price_per_day, $morning_slot_price, $evening_slot_price, $advance_amount, $description, $facilities, $main_image, $edit_id]);
+                        UPDATE halls SET name=?, location=?, capacity=?, price_per_day=?, advance_amount=?, description=?, facilities=?, main_image=? WHERE id=?
+                    ")->execute([$name, $location, $capacity, $price_per_day, $advance_amount, $description, $facilities, $main_image, $edit_id]);
                     $msg = 'Hall updated successfully!';
                 } else {
                     $pdo->prepare("
-                        INSERT INTO halls (name, location, capacity, price_per_day, morning_slot_price, evening_slot_price, advance_amount, description, facilities, main_image, created_at) VALUES (?,?,?,?,?,?,?,?,?,?,NOW())
-                    ")->execute([$name, $location, $capacity, $price_per_day, $morning_slot_price, $evening_slot_price, $advance_amount, $description, $facilities, $main_image]);
+                        INSERT INTO halls (name, location, capacity, price_per_day, advance_amount, description, facilities, main_image, created_at) VALUES (?,?,?,?,?,?,?,?,NOW())
+                    ")->execute([$name, $location, $capacity, $price_per_day, $advance_amount, $description, $facilities, $main_image]);
                     $msg = 'Hall added successfully!';
                 }
                 $action = ''; // Go back to list
@@ -173,18 +171,11 @@ try {
                             </div>
                         </div>
 
-                        <div class="form-grid" style="grid-template-columns:1fr 1fr 1fr;">
+                        <div class="form-grid">
                             <div class="form-group">
-                                <label><i class="fas fa-sun" style="color:#f59e0b;"></i> Morning Slot Price (Rs.)</label>
-                                <input type="number" name="morning_slot_price" class="form-control" placeholder="e.g., 12000" min="0" step="100" value="<?php echo htmlspecialchars($edit_hall['morning_slot_price'] ?? ''); ?>">
-                            </div>
-                            <div class="form-group">
-                                <label><i class="fas fa-moon" style="color:#6366f1;"></i> Evening Slot Price (Rs.)</label>
-                                <input type="number" name="evening_slot_price" class="form-control" placeholder="e.g., 15000" min="0" step="100" value="<?php echo htmlspecialchars($edit_hall['evening_slot_price'] ?? ''); ?>">
-                            </div>
-                            <div class="form-group">
-                                <label><i class="fas fa-receipt" style="color:#e91e63;"></i> Advance Amount (Rs.)</label>
-                                <input type="number" name="advance_amount" class="form-control" placeholder="e.g., 5000" min="0" step="100" value="<?php echo htmlspecialchars($edit_hall['advance_amount'] ?? ''); ?>">
+                                <label><i class="fas fa-receipt" style="color:#e91e63;"></i> Advance Amount (Rs.) <span style="color:var(--danger)">*</span></label>
+                                <input type="number" name="advance_amount" class="form-control" placeholder="e.g., 5000" required min="0" step="100" value="<?php echo htmlspecialchars($edit_hall['advance_amount'] ?? ''); ?>">
+                                <small style="color:var(--gray-light);">The initial deposit required to confirm a booking.</small>
                             </div>
                         </div>
 
